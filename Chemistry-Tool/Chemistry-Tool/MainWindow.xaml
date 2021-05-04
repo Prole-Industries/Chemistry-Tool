@@ -1,0 +1,69 @@
+﻿<Window x:Class="Chemistry_Tool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Chemistry_Tool"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style x:Key="GenericButton" TargetType="Button">
+                <!--<Setter Property="OverridesDefaultStyle" Value="True"/>-->
+
+                <Setter Property="FontFamily" Value="Consolas"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="WhiteSmoke"/>
+                <Setter Property="Background" Value="#44000000"/>
+                <Setter Property="BorderBrush" Value="#44FF0000"/>
+
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="Gray"/>
+                        <Setter Property="Background" Value="#44999999"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <Style  x:Key="GenericScrollViewer" TargetType="ScrollViewer">
+                <Setter Property="Template">
+                    
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid Background="#FF252525">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" HorizontalAlignment="Left" Width="280" >
+            <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                <Button Content="Reaction Solver" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Width="240" 
+                Margin="20,20,0,0" 
+                Height="120"
+                Style="{StaticResource GenericButton}"/>
+
+                <Button Content="More utilities coming soon" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Width="240" 
+                Margin="20,160,0,0" 
+                Height="120"
+                Style="{StaticResource GenericButton}"
+                />
+            </Grid>
+        </ScrollViewer>
+        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Content="About" Grid.Column="0" Style="{StaticResource GenericButton}"/>
+            <Button Content="Settings" Grid.Column="1" Style="{StaticResource GenericButton}"/>
+            <Button Content="Prole Industries" Grid.Column="2" Style="{StaticResource GenericButton}"/>
+        </Grid>
+    </Grid>
+</Window>
