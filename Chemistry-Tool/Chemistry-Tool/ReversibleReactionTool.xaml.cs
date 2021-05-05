@@ -30,9 +30,19 @@ namespace Chemistry_Tool
             Reactants.Children.Add(GenericChemical());
         }
 
+        public void RemoveReactant(object sender, RoutedEventArgs e)
+        {
+            Reactants.Children.RemoveAt(Reactants.Children.Count - 1);
+        }
+
         public void AddProduct(object sender, RoutedEventArgs e)
         {
             Products.Children.Add(GenericChemical());
+        }
+
+        public void RemoveProduct(object sender, RoutedEventArgs e)
+        {
+            Products.Children.RemoveAt(Products.Children.Count - 1);
         }
 
         private UIElement GenericChemical()
@@ -43,26 +53,49 @@ namespace Chemistry_Tool
                 Margin = new Thickness(0, 5, 0, 5)
             };
 
-            TextBox name = new TextBox
-            {
-                ToolTip = "Name of Chemical"
-            };
-
-            TextBox conc = new TextBox
-            {
-                ToolTip = "Concentration of Chemical (mol dm⁻³)",
-            };
-            conc.PreviewTextInput += new TextCompositionEventHandler(IsConcValid);
-
-            g.Children.Add(name);
-            g.Children.Add(conc);
+            g.Children.Add(new TextBlock() { Style = (Style)FindResource("GenericTextBox"), Text = "Chemical Name:"});
+            g.Children.Add(new TextBox() { ToolTip = "Name of Chemical" });
+            g.Children.Add(new TextBlock() { Style = (Style)FindResource("GenericTextBox"), Text = "Concentration:" });
+            g.Children.Add(new TextBox() { ToolTip = "Concentration of Chemical (mol dm⁻³)" });
+            g.Children.Add(new TextBlock() { Style = (Style)FindResource("GenericTextBox"), Text = "Moles:" });
+            g.Children.Add(new TextBox() { ToolTip = "Moles of Chemical" });
             return g;
         }
 
-        private void IsConcValid(object sender, TextCompositionEventArgs e)
+        public void Equilibrium(object sender, RoutedEventArgs e)
+        {
+            double KcReactants = 1;
+            double KcProducts = 1;
+            double Kc;
+
+            foreach(StackPanel productchild in Products.Children.OfType<StackPanel>())
+            {
+                IsChemicalValid(productchild);
+                KcProducts *= Math.Pow(float.Parse(((TextBox)productchild.Children[3]).Text), float.Parse(((TextBox)productchild.Children[5]).Text));
+            }
+
+            foreach (StackPanel reactantchild in Reactants.Children.OfType<StackPanel>())
+            {
+                IsChemicalValid(reactantchild);
+                KcReactants *= Math.Pow(float.Parse(((TextBox)reactantchild.Children[3]).Text), float.Parse(((TextBox)reactantchild.Children[5]).Text));
+            }
+
+            Kc = KcReactants / KcProducts;
+
+            Console.WriteLine(Kc);
+        }
+
+        private void IsChemicalValid(StackPanel target)
+        {
+            if (((TextBox)target.Children[1]).Text == "") MessageBox.Show("One or more chemical names are missing", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (!IsNumValid((TextBox)target.Children[3])) MessageBox.Show("One or more chemical concentrations are invalid", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (!IsNumValid((TextBox)target.Children[5])) MessageBox.Show("One or more molar values are invalid", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private bool IsNumValid(TextBox target)
         {
             Regex regex = new Regex(@"^(\d+)((.)?(\d+))?$", RegexOptions.Multiline);
-            e.Handled = regex.IsMatch(e.Text);
+            return regex.IsMatch(target.Text);
         }
     }
 }

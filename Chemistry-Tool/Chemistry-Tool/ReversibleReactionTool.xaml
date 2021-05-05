@@ -10,33 +10,50 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20*"/>
             <ColumnDefinition Width="20*"/>
-            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="30*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="0*"/>
+            <RowDefinition Height="90*"/>
+            <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Column="0">
-            <TextBlock Style="{DynamicResource GenericTextBox}" Text="Reactants"/>
-            <StackPanel x:Name="Reactants">
-                
-            </StackPanel>
-            <Button Content="Add Reactant" Click="AddReactant" Style="{DynamicResource GenericButton}" VerticalAlignment="Bottom"/>
-        </Grid>
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="10*"/>
-                <RowDefinition Height="80*"/>
+                <RowDefinition Height="70*"/>
+                <RowDefinition Height="10*"/>
                 <RowDefinition Height="10*"/>
             </Grid.RowDefinitions>
-            <TextBlock Style="{DynamicResource GenericTextBox}" Text="Products" Grid.Row="0"/>
-            <ScrollViewer HorizontalAlignment="Stretch" Template="{DynamicResource GenericScroll}" Grid.Row="1">
-                <StackPanel x:Name="Products" HorizontalAlignment="Stretch" Margin="10">
-
+            
+            <TextBlock Text="Reactants" Style="{DynamicResource GenericTextBox}" Grid.Row="0"/>
+            <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch" >
+                <StackPanel x:Name="Reactants" HorizontalAlignment="Stretch" Margin="10">
                 </StackPanel>
             </ScrollViewer>
-            <Button Content="Add Product" Click="AddProduct" Style="{DynamicResource GenericButton}" VerticalAlignment="Bottom" Grid.Row="2"/>
+            <Button Content="Add Reactant"      Click="AddReactant"     Style="{DynamicResource GenericButton}" Grid.Row="2" VerticalAlignment="Bottom"/>
+            <Button Content="Remove Reactant"   Click="RemoveReactant"  Style="{DynamicResource GenericButton}" Grid.Row="3" VerticalAlignment="Bottom"/>
         </Grid>
+        <Grid Grid.Column="1" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="70*"/>
+                <RowDefinition Height="10*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Products" Style="{DynamicResource GenericTextBox}" Grid.Row="0"/>
+            <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch">
+                <StackPanel x:Name="Products" HorizontalAlignment="Stretch" Margin="10">
+                </StackPanel>
+            </ScrollViewer>
+            <Button Content="Add Product"       Click="AddProduct"      Style="{DynamicResource GenericButton}" Grid.Row="2" VerticalAlignment="Bottom"/>
+            <Button Content="Remove Product"    Click="RemoveProduct"   Style="{DynamicResource GenericButton}" Grid.Row="3" VerticalAlignment="Bottom"/>
+        </Grid>
+
+        <Grid Background="#44999999" Grid.Column="3" Margin="0,10,10,0">
+            <TextBlock/>
+        </Grid>
+
+        <Button Content="Find Equilibrium" Click="Equilibrium" Style="{DynamicResource GenericButton}" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>

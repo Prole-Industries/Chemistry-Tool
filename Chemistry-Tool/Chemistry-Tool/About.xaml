@@ -10,13 +10,13 @@
     <Grid Background="#FF252525">
         <ScrollViewer HorizontalAlignment="Stretch" Template="{DynamicResource GenericScroll}" Margin="10,20" HorizontalContentAlignment="Center">
             <StackPanel>
-                <TextBlock Text="Written By:&#10;Johann Scott" Style="{DynamicResource GenericTextBox}"/>
-                <TextBlock Text="Version:&#10;v0.2.0" Style="{DynamicResource GenericTextBox}"/>
-                <TextBlock Text="Use permitted under Apache License 2.0" Style="{DynamicResource GenericTextBox}"/>
+                <TextBlock Text="Written By:&#10;Johann Scott"              Style="{DynamicResource GenericTextBox}"/>
+                <TextBlock Text="Version:&#10;v0.2.0"                       Style="{DynamicResource GenericTextBox}"/>
+                <TextBlock Text="Use permitted under Apache License 2.0"    Style="{DynamicResource GenericTextBox}"/>
                 <TextBlock Style="{DynamicResource GenericTextBox}">
                     <Hyperlink NavigateUri="https://github.com/Prole-Industries/Chemisty-Tool" RequestNavigate="EH_OpenSourceCode">Source Code</Hyperlink>
                 </TextBlock>
-                <TextBlock Text="Prole Industries 2021 - Some rights maybe kept to the side, idk" Style="{DynamicResource GenericTextBox}"/>
+                <TextBlock Text="Prole Industries 2021" Style="{DynamicResource GenericTextBox}"/>
             </StackPanel>
         </ScrollViewer>
     </Grid>
