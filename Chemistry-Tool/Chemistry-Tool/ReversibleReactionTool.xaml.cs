@@ -20,6 +20,8 @@ namespace Chemistry_Tool
     /// </summary>
     public partial class ReversibleReactionTool : Window
     {
+        private double Kc;
+
         public ReversibleReactionTool()
         {
             InitializeComponent();
@@ -66,30 +68,43 @@ namespace Chemistry_Tool
         {
             double KcReactants = 1;
             double KcProducts = 1;
-            double Kc;
+
+            if(Products.Children.Count * Reactants.Children.Count == 0 || Products.Children.Count * Reactants.Children.Count == 1)
+            {
+                App.Alert("At least 3 Products and Reactants must be specified");
+                return;
+            }
 
             foreach(StackPanel productchild in Products.Children.OfType<StackPanel>())
             {
-                IsChemicalValid(productchild);
-                KcProducts *= Math.Pow(float.Parse(((TextBox)productchild.Children[3]).Text), float.Parse(((TextBox)productchild.Children[5]).Text));
+                if (IsChemicalValid(productchild))
+                {
+                    KcProducts *= Math.Pow(float.Parse(((TextBox)productchild.Children[3]).Text), float.Parse(((TextBox)productchild.Children[5]).Text));
+                }
+                else return;
             }
 
             foreach (StackPanel reactantchild in Reactants.Children.OfType<StackPanel>())
             {
-                IsChemicalValid(reactantchild);
-                KcReactants *= Math.Pow(float.Parse(((TextBox)reactantchild.Children[3]).Text), float.Parse(((TextBox)reactantchild.Children[5]).Text));
+                if (IsChemicalValid(reactantchild))
+                {
+                    KcReactants *= Math.Pow(float.Parse(((TextBox)reactantchild.Children[3]).Text), float.Parse(((TextBox)reactantchild.Children[5]).Text));
+                }
+                else return;
             }
 
             Kc = KcReactants / KcProducts;
+            EqConst.Text = $"Kc: {Kc}";
 
-            Console.WriteLine(Kc);
+            EqData.Visibility = Visibility.Visible;
         }
 
-        private void IsChemicalValid(StackPanel target)
+        private bool IsChemicalValid(StackPanel target)
         {
-            if (((TextBox)target.Children[1]).Text == "") MessageBox.Show("One or more chemical names are missing", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
-            if (!IsNumValid((TextBox)target.Children[3])) MessageBox.Show("One or more chemical concentrations are invalid", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
-            if (!IsNumValid((TextBox)target.Children[5])) MessageBox.Show("One or more molar values are invalid", "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
+            if (((TextBox)target.Children[1]).Text == "") { App.Alert("One or more chemical names are missing"); return false; }
+            if (!IsNumValid((TextBox)target.Children[3])) { App.Alert("One or more chemical concentrations are invalid"); return false; }
+            if (!IsNumValid((TextBox)target.Children[5])) { App.Alert("One or more molar values are invalid"); return false; }
+            return true;
         }
 
         private bool IsNumValid(TextBox target)

@@ -15,7 +15,7 @@
                 <Button Content="More Tools coming soon..." IsEnabled="False"   Style="{DynamicResource GenericButton}"/>
             </StackPanel>
         </ScrollViewer>
-        <Grid x:Name="AppData" Visibility="Visible" Background="#44999999" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,10,10,0">
+        <Grid x:Name="AppData" Visibility="Hidden" Background="#44999999" Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
             <TextBlock x:Name="AppName" Text="Application Name"             Style="{DynamicResource GenericTextBox}"/>
             <Button                     Content="Launch" Click="LaunchApp"  Style="{DynamicResource GenericButton}" VerticalAlignment="Bottom"/>
         </Grid>

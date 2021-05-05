@@ -23,6 +23,23 @@ namespace Chemistry_Tool
         public MainWindow()
         {
             InitializeComponent();
+
+            //Chemical[] chems = new Chemical[]
+            //{
+            //    new Chemical("C"),
+            //    new Chemical("CO"),
+            //    new Chemical("O2"),
+            //    new Chemical("CO2"),
+            //    new Chemical("Al2Cl3")
+            //};
+
+            //foreach (Chemical chem in chems)
+            //{
+            //    chem.ResolveElements();
+            //    Console.WriteLine();
+            //}
+
+            Console.WriteLine(Atom.GetBySymbol("C").Name);
         }
 
         public void AppLoader(object sender, RoutedEventArgs e)
