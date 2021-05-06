@@ -23,16 +23,6 @@ namespace Chemistry_Tool
         public MainWindow()
         {
             InitializeComponent();
-
-            Chemical c1 = new Chemical("C");
-            Chemical c2 = new Chemical("CO");
-            Chemical c3 = new Chemical("O2");
-            Chemical c4 = new Chemical("CO2");
-            Chemical c5 = new Chemical("Os");
-            Chemical c6 = new Chemical("OS");
-            Chemical c7 = new Chemical("Al2Cl3");
-            Chemical c8 = new Chemical("Mg");
-            Chemical c9 = new Chemical("MG");
         }
 
         public void AppLoader(object sender, RoutedEventArgs e)

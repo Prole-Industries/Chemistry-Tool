@@ -70,7 +70,7 @@ namespace Chemistry_Tool
             {
                 return PeriodicTable[PeriodicTable.FindIndex(f => f.Symbol == symbol)];
             }
-            finally
+            catch(ArgumentOutOfRangeException)
             {
                 throw new Exception("Symbol could not be resolved");
             }
