@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chemistry_Tool"
         mc:Ignorable="d"
-        Title="ReversibleReactionTool" Height="450" Width="800">
+        Title="Chemistry Tool  - Reversible Reaction Tool" Height="450" Width="800">
     <Grid Background="#FF252525">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20*"/>

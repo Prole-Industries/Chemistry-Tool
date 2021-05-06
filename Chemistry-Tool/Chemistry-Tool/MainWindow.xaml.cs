@@ -24,22 +24,15 @@ namespace Chemistry_Tool
         {
             InitializeComponent();
 
-            //Chemical[] chems = new Chemical[]
-            //{
-            //    new Chemical("C"),
-            //    new Chemical("CO"),
-            //    new Chemical("O2"),
-            //    new Chemical("CO2"),
-            //    new Chemical("Al2Cl3")
-            //};
-
-            //foreach (Chemical chem in chems)
-            //{
-            //    chem.ResolveElements();
-            //    Console.WriteLine();
-            //}
-
-            Console.WriteLine(Atom.GetBySymbol("C").Name);
+            Chemical c1 = new Chemical("C");
+            Chemical c2 = new Chemical("CO");
+            Chemical c3 = new Chemical("O2");
+            Chemical c4 = new Chemical("CO2");
+            Chemical c5 = new Chemical("Os");
+            Chemical c6 = new Chemical("OS");
+            Chemical c7 = new Chemical("Al2Cl3");
+            Chemical c8 = new Chemical("Mg");
+            Chemical c9 = new Chemical("MG");
         }
 
         public void AppLoader(object sender, RoutedEventArgs e)
@@ -55,6 +48,10 @@ namespace Chemistry_Tool
             {
                 case "Reversible Reaction Tool":
                     opener = new ReversibleReactionTool();
+                    break;
+
+                case "Equation Balancer":
+                    opener = new EquationBalancer();
                     break;
 
                 default:

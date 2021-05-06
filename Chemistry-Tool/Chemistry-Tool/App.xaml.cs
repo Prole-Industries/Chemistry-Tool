@@ -36,6 +36,9 @@ namespace Chemistry_Tool
 
         public Categories Category { get; private set; }
 
+        //This is only to be used as an exception case if the atom entered is invalid
+        public Atom() { }
+
         public Atom(string _symbol, string _name, int _anum, double _mnum, int _period, int _group, Categories _category)
         {
             Symbol = _symbol;
@@ -63,8 +66,14 @@ namespace Chemistry_Tool
 
         public static Atom GetBySymbol(string symbol)
         {
-
-            return PeriodicTable[PeriodicTable.FindIndex(f => f.Symbol == symbol)];
+            try
+            {
+                return PeriodicTable[PeriodicTable.FindIndex(f => f.Symbol == symbol)];
+            }
+            finally
+            {
+                throw new Exception("Symbol could not be resolved");
+            }
         }
 
         //I wrote the periodic table out for you can I please have a 9 thanks
@@ -204,11 +213,11 @@ namespace Chemistry_Tool
 
     public class Chemical
     {
-        public Dictionary<Atom, int> Elements { get; private set; }
+        public Dictionary<Atom, int> Elements { get; private set; } = new Dictionary<Atom, int>();
 
         public Chemical(string formula)
         {
-            string elementRegex = "([A-Z][a-z]*)([0-9*])";
+            string elementRegex = "([A-Z][a-z]*)([0-9]*)";
             string validateRegex = $"^({elementRegex})+$";
 
             if (!Regex.IsMatch(formula, validateRegex))
@@ -219,10 +228,6 @@ namespace Chemistry_Tool
 
             foreach (Match match in Regex.Matches(formula, elementRegex))
             {
-                foreach(Group m in match.Groups)
-                {
-                    Console.WriteLine(m.ToString());
-                }
                 string symbol = match.Groups[1].Value;
                 int count =
                     match.Groups[2].Value != "" ?
