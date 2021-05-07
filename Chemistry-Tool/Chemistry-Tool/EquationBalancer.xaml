@@ -5,8 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chemistry_Tool"
         mc:Ignorable="d"
-        Title="Chemistry Tool - Equation Balancer" Height="450" Width="800">
+        Title="Chemistry Tool - Equation Balancer" Height="720" Width="1080">
     <Grid Background="#FF252525">
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="60*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Column="0" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="85*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Reactants" Style="{DynamicResource GenericTextBox}" Grid.Row="0"/>
+            <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch" >
+                <StackPanel x:Name="Reactants" HorizontalAlignment="Stretch" Margin="10">
+                </StackPanel>
+            </ScrollViewer>
+            <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
+                <Button Content="Add Reactant"      Click="AddReactant"     Style="{DynamicResource GenericButton}" Grid.Row="2" VerticalAlignment="Bottom"/>
+                <Button Content="Remove Reactant"   Click="RemoveReactant"  Style="{DynamicResource GenericButton}" Grid.Row="3" VerticalAlignment="Bottom"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Column="1" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="85*"/>
+                <RowDefinition Height="10*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Products" Style="{DynamicResource GenericTextBox}" Grid.Row="0"/>
+            <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch">
+                <StackPanel x:Name="Products" HorizontalAlignment="Stretch" Margin="10">
+                </StackPanel>
+            </ScrollViewer>
+            <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
+                <Button Content="Add Product"       Click="AddProduct"      Style="{DynamicResource GenericButton}" Grid.Row="2" VerticalAlignment="Bottom"/>
+                <Button Content="Remove Product"    Click="RemoveProduct"   Style="{DynamicResource GenericButton}" Grid.Row="3" VerticalAlignment="Bottom"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel x:Name="BalanceDisplaey" Visibility="Hidden" Grid.Column="2" VerticalAlignment="Center">
+            <TextBlock x:Name="ReactantsBalanced"   Text="" Style="{DynamicResource GenericTextBox}"/>
+            <TextBlock                              Text="|&#10;V" Style="{DynamicResource GenericTextBox}"/>
+            <TextBlock x:Name="ProductsBalanced"    Text="" Style="{DynamicResource GenericTextBox}"/>
+        </StackPanel>
+
+        <Button Content="Balance" Click="Balance" Style="{DynamicResource GenericButton}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>

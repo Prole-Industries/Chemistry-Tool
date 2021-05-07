@@ -29,7 +29,7 @@ namespace Chemistry_Tool
 
         public void AddReactant(object sender, RoutedEventArgs e)
         {
-            Reactants.Children.Add(GenericChemical());
+            Reactants.Children.Add(App.GenericChemical());
         }
 
         public void RemoveReactant(object sender, RoutedEventArgs e)
@@ -39,29 +39,12 @@ namespace Chemistry_Tool
 
         public void AddProduct(object sender, RoutedEventArgs e)
         {
-            Products.Children.Add(GenericChemical());
+            Products.Children.Add(App.GenericChemical());
         }
 
         public void RemoveProduct(object sender, RoutedEventArgs e)
         {
             Products.Children.RemoveAt(Products.Children.Count - 1);
-        }
-
-        private UIElement GenericChemical()
-        {
-            StackPanel g = new StackPanel
-            {
-                Background = new SolidColorBrush(Color.FromArgb(0x44, 0x99, 0x99, 0x99)),
-                Margin = new Thickness(0, 5, 0, 5)
-            };
-
-            g.Children.Add(new TextBlock() { Style = (Style)FindResource("GenericTextBox"), Text = "Chemical Name:"});
-            g.Children.Add(new TextBox() { ToolTip = "Name of Chemical" });
-            g.Children.Add(new TextBlock() { Style = (Style)FindResource("GenericTextBox"), Text = "Concentration:" });
-            g.Children.Add(new TextBox() { ToolTip = "Concentration of Chemical (mol dm⁻³)" });
-            g.Children.Add(new TextBlock() { Style = (Style)FindResource("GenericTextBox"), Text = "Moles:" });
-            g.Children.Add(new TextBox() { ToolTip = "Moles of Chemical" });
-            return g;
         }
 
         public void Equilibrium(object sender, RoutedEventArgs e)
@@ -71,46 +54,24 @@ namespace Chemistry_Tool
 
             if(Products.Children.Count * Reactants.Children.Count == 0 || Products.Children.Count * Reactants.Children.Count == 1)
             {
-                App.Alert("At least 3 Products and Reactants must be specified");
+                App.Alert("A total of at least 3 Products and Reactants must be specified");
                 return;
             }
 
-            foreach(StackPanel productchild in Products.Children.OfType<StackPanel>())
+            foreach(Substance reactant in Reactants.Children.OfType<StackPanel>().Select(t => new Substance(t)))
             {
-                if (IsChemicalValid(productchild))
-                {
-                    KcProducts *= Math.Pow(float.Parse(((TextBox)productchild.Children[3]).Text), float.Parse(((TextBox)productchild.Children[5]).Text));
-                }
-                else return;
+                KcReactants *= Math.Pow(reactant.Concentration, reactant.Moles);
             }
 
-            foreach (StackPanel reactantchild in Reactants.Children.OfType<StackPanel>())
+            foreach (Substance product in Products.Children.OfType<StackPanel>().Select(t => new Substance(t)))
             {
-                if (IsChemicalValid(reactantchild))
-                {
-                    KcReactants *= Math.Pow(float.Parse(((TextBox)reactantchild.Children[3]).Text), float.Parse(((TextBox)reactantchild.Children[5]).Text));
-                }
-                else return;
+                KcProducts *= Math.Pow(product.Concentration, product.Moles);
             }
 
-            Kc = KcReactants / KcProducts;
+            Kc = KcProducts / KcReactants;
             EqConst.Text = $"Kc: {Kc}";
 
             EqData.Visibility = Visibility.Visible;
-        }
-
-        private bool IsChemicalValid(StackPanel target)
-        {
-            if (((TextBox)target.Children[1]).Text == "") { App.Alert("One or more chemical names are missing"); return false; }
-            if (!IsNumValid((TextBox)target.Children[3])) { App.Alert("One or more chemical concentrations are invalid"); return false; }
-            if (!IsNumValid((TextBox)target.Children[5])) { App.Alert("One or more molar values are invalid"); return false; }
-            return true;
-        }
-
-        private bool IsNumValid(TextBox target)
-        {
-            Regex regex = new Regex(@"^(\d+)((.)?(\d+))?$", RegexOptions.Multiline);
-            return regex.IsMatch(target.Text);
         }
     }
 }

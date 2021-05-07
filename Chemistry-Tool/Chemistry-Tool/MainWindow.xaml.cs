@@ -23,16 +23,21 @@ namespace Chemistry_Tool
         public MainWindow()
         {
             InitializeComponent();
-
 #pragma warning disable IDE0059
-            Chemical chem1 = new Chemical("C");
-            Chemical chem2 = new Chemical("O2");
-            Chemical chem3 = new Chemical("CO2");
-            Chemical chem4 = new Chemical("Al2Cl3");
-            Chemical chem5 = new Chemical("OS");
-            Chemical chem6 = new Chemical("Os");
-            Chemical chem7 = new Chemical("HCOOH");
-            Chemical chem8 = new Chemical("Ca(NO3)2");
+            //            Chemical chem1 = new Chemical("C");
+            //            Chemical chem2 = new Chemical("O2");
+            //            Chemical chem3 = new Chemical("CO2");
+            //            Chemical chem4 = new Chemical("Al2Cl3");
+            //            Chemical chem5 = new Chemical("OS");
+            //            Chemical chem6 = new Chemical("Os");
+            //            Chemical chem7 = new Chemical("HCOOH");
+            //            Chemical chem8 = new Chemical("Ca(NO3)2");
+
+            //Simple esterification test case
+            Chemical r1 = new Chemical("CH3COOH");
+            Chemical r2 = new Chemical("CH3CH2OH");
+            Chemical p1 = new Chemical("CH3COOCH2CH3");
+            Chemical p2 = new Chemical("H2O");
 #pragma warning restore IDE0059
         }
 

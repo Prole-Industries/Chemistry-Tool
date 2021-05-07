@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Chemistry_Tool"
         mc:Ignorable="d"
-        Title="About" Height="450" Width="800"
+        Title="About" Height="400" Width="600"
         ResizeMode="NoResize">
     <Grid Background="#FF252525">
         <ScrollViewer HorizontalAlignment="Stretch" Template="{DynamicResource GenericScroll}" Margin="10,20" HorizontalContentAlignment="Center">
             <StackPanel>
                 <TextBlock Text="Written By:&#10;Johann Scott"              Style="{DynamicResource GenericTextBox}"/>
-                <TextBlock Text="Version:&#10;v0.2.0"                       Style="{DynamicResource GenericTextBox}"/>
+                <TextBlock Text="Version:&#10;v0.4.2"                       Style="{DynamicResource GenericTextBox}"/>
                 <TextBlock Text="Use permitted under Apache License 2.0"    Style="{DynamicResource GenericTextBox}"/>
                 <TextBlock Style="{DynamicResource GenericTextBox}">
                     <Hyperlink NavigateUri="https://github.com/Prole-Industries/Chemisty-Tool" RequestNavigate="EH_OpenSourceCode">Source Code</Hyperlink>
