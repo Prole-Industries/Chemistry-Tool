@@ -18,7 +18,6 @@ namespace Chemistry_Tool
         {
             MessageBox.Show(message, "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
     }
 
     public class Atom
@@ -217,8 +216,39 @@ namespace Chemistry_Tool
 
         public Chemical(string formula)
         {
-            string elementRegex = "([A-Z][a-z]*)([0-9]*)";
-            string validateRegex = $"^({elementRegex})+$";
+            //string elementRegex = "([A-Z][a-z]*)([0-9]*)";
+            //string validateRegex = $"^({elementRegex})+$";
+
+            //string elementRegex = @"[A-Z][a-z]?\d*|(?<!\([^)]*)\(.*\)\d+(?![^(]*\))";
+            //string validateRegex = elementRegex;
+
+            //if (!Regex.IsMatch(formula, validateRegex))
+            //{
+            //    App.Alert("Formula could not be successfully parsed");
+            //    return;
+            //}
+
+            //foreach (Match match in Regex.Matches(formula, elementRegex))
+            //{
+            //    string symbol = match.Groups[1].Value;
+            //    int count =
+            //        match.Groups[2].Value != "" ?
+            //        int.Parse(match.Groups[2].Value) :
+            //        1;
+            //    Atom matchatom = Atom.GetBySymbol(symbol);
+            //    if (Elements.ContainsKey(matchatom)) Elements[matchatom]++;
+            //    else Elements.Add(matchatom, count);
+            //}
+
+            GetElements(formula, 1);
+            this.ResolveElements();
+            Console.WriteLine();
+        }
+
+        private void GetElements(string formula, int number)
+        {
+            string elementRegex = @"[A-Z][a-z]?\d*|(?<!\([^)]*)\(.*\)\d+(?![^(]*\))";
+            string validateRegex = $"({elementRegex})+";
 
             if (!Regex.IsMatch(formula, validateRegex))
             {
@@ -228,13 +258,31 @@ namespace Chemistry_Tool
 
             foreach (Match match in Regex.Matches(formula, elementRegex))
             {
-                string symbol = match.Groups[1].Value;
-                int count =
-                    match.Groups[2].Value != "" ?
-                    int.Parse(match.Groups[2].Value) :
-                    1;
+                string mstring = match.ToString();
+                if (mstring.Contains("("))
+                {
+                    string m = mstring.Substring(1, mstring.Length - mstring.LastIndexOf(")") + 1);
+                    int n = Convert.ToInt32(mstring.Substring(mstring.LastIndexOf(")") + 1));
+                    GetElements(mstring.Substring(1, mstring.Length - mstring.LastIndexOf(")") + 1), Convert.ToInt32(mstring.Substring(mstring.LastIndexOf(")")+1)));
+                }
+                else
+                {
+                    //string symbol = match.Groups[0].Value;
+                    //int count =
+                    //    match.Groups[2].Value != "" ?
+                    //    int.Parse(match.Groups[2].Value) :
+                    //    1;
 
-                Elements.Add(Atom.GetBySymbol(symbol), count);
+                    string symbol = Regex.Replace(mstring, @"\d*", string.Empty);
+                    int count =
+                        Regex.Replace(mstring, @"[A-Za-z]", string.Empty) != "" ?
+                        int.Parse(Regex.Replace(mstring, @"[A-Za-z]", string.Empty)) :
+                        1;
+                    Atom matchatom = Atom.GetBySymbol(symbol);
+
+                    if (Elements.ContainsKey(matchatom)) Elements[matchatom] += (count * number);
+                    else Elements.Add(matchatom, count * number);
+                }
             }
         }
 

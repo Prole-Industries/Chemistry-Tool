@@ -23,6 +23,17 @@ namespace Chemistry_Tool
         public MainWindow()
         {
             InitializeComponent();
+
+#pragma warning disable IDE0059
+            Chemical chem1 = new Chemical("C");
+            Chemical chem2 = new Chemical("O2");
+            Chemical chem3 = new Chemical("CO2");
+            Chemical chem4 = new Chemical("Al2Cl3");
+            Chemical chem5 = new Chemical("OS");
+            Chemical chem6 = new Chemical("Os");
+            Chemical chem7 = new Chemical("HCOOH");
+            Chemical chem8 = new Chemical("Ca(NO3)2");
+#pragma warning restore IDE0059
         }
 
         public void AppLoader(object sender, RoutedEventArgs e)
@@ -66,6 +77,5 @@ namespace Chemistry_Tool
         {
             System.Diagnostics.Process.Start("http://www.proleindustries.com");
         }
-
     }
 }
