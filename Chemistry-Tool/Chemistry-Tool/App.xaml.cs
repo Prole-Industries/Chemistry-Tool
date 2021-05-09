@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,6 +16,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 namespace Chemistry_Tool
 {
@@ -252,16 +258,19 @@ namespace Chemistry_Tool
     {
         public Dictionary<Atom, int> Elements { get; private set; } = new Dictionary<Atom, int>();
         public string MolecularFormula { get; private set; }
+        public string MolecularFormulaPretty { get; private set; }
 
         public Chemical(string formula)
         {
             GetElements(formula, 1);
+
+            MolecularFormula = formula;
             
             for(int x = 48; x < 58; x++)
             {
                 formula = formula.Replace(Convert.ToChar(x), Convert.ToChar(x+8272));
             }
-            MolecularFormula = formula;
+            MolecularFormulaPretty = formula;
         }
 
         private void GetElements(string formula, int number)
@@ -303,6 +312,37 @@ namespace Chemistry_Tool
             {
                 Console.WriteLine($"{element.Key.Name} ({element.Key.Symbol}) >>> {element.Value}");
             }
+        }
+
+        public void GetData()
+        {
+            object data;
+            WebClient client = new WebClient();
+            //XmlSerializer serialiser = new XmlSerializer(typeof(object));
+            //XmlReader reader = XmlReader.Create("pug_view.xsd");
+            //XmlSchema schema = XmlSchema.Read(reader, XmlValidationCallback);
+
+            string cid = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{MolecularFormula}/cids/TXT");
+            cid = cid.Substring(0, cid.IndexOf("\n"));
+            string chemdata = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/json");
+
+            //XmlReaderSettings dataSettings = new XmlReaderSettings();
+            //dataSettings.Schemas.Add(schema);
+            //dataSettings.ValidationType = ValidationType.Schema;
+
+            //using (reader = XmlReader.Create(new StringReader(chemdata), dataSettings))
+            //{
+            //    data = (object)serialiser.Deserialize(reader);
+            //}
+
+            data = JsonSerializer.Deserialize(chemdata, typeof(object));
+
+        }
+
+        private static void XmlValidationCallback(object sender, ValidationEventArgs e)
+        {
+            if (e.Severity == XmlSeverityType.Warning) App.Alert($"Warning: {e.Message}");
+            else if (e.Severity == XmlSeverityType.Error) App.Alert($"Error: {e.Message}");
         }
     }
 
