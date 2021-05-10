@@ -91,6 +91,9 @@
     <Compile Include="EquationBalancer.xaml.cs">
       <DependentUpon>EquationBalancer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Lookup.xaml.cs">
+      <DependentUpon>Lookup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ReversibleReactionTool.xaml.cs">
       <DependentUpon>ReversibleReactionTool.xaml</DependentUpon>
     </Compile>
@@ -99,6 +102,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="EquationBalancer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Lookup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

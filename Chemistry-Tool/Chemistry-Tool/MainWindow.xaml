@@ -10,8 +10,9 @@
         </Grid.RowDefinitions>
         <ScrollViewer Template="{DynamicResource GenericScroll}" Background="#44999999" Grid.Column="0" Grid.RowSpan="2" Margin="10,10,10,10" HorizontalAlignment="Stretch">
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
-                <Button Content="Reversible Reaction Tool" Click="AppLoader"    Style="{DynamicResource GenericButton}"/>
-                <Button Content="Equation Balancer"        Click="AppLoader"    Style="{DynamicResource GenericButton}"/>
+                <Button Content="Reversible Reaction Tool"  Click="AppLoader"   Style="{DynamicResource GenericButton}"/>
+                <Button Content="Equation Balancer"         Click="AppLoader"   Style="{DynamicResource GenericButton}"/>
+                <Button Content="Chemical Lookup"           Click="AppLoader"   Style="{DynamicResource GenericButton}"/>
                 <Button Content="More Tools coming soon..." IsEnabled="False"   Style="{DynamicResource GenericButton}"/>
             </StackPanel>
         </ScrollViewer>

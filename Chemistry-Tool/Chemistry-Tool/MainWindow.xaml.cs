@@ -38,8 +38,6 @@ namespace Chemistry_Tool
             Chemical r2 = new Chemical("CH3CH2OH");
             Chemical p1 = new Chemical("CH3COOCH2CH3");
             Chemical p2 = new Chemical("H2O");
-
-            p2.GetData();
 #pragma warning restore IDE0059
         }
 
@@ -60,6 +58,10 @@ namespace Chemistry_Tool
 
                 case "Equation Balancer":
                     opener = new EquationBalancer();
+                    break;
+
+                case "Chemical Lookup":
+                    opener = new Lookup();
                     break;
 
                 default:

@@ -317,26 +317,45 @@ namespace Chemistry_Tool
             }
         }
 
-        public void GetData()
+        public class Metadata
+        {
+            public string Name { get; private set; }
+            public string Structure { get; private set; }
+            public string InChI { get; private set; }
+            public string Description { get; private set; }
+            public double MeltingPoint { get; private set; }
+            public double BoilingPoint { get; private set; }
+
+            public Metadata(string _name, string _structure, string _inchi, string _description, double _meltingpoint, double _boilingpoint)
+            {
+                Name = _name;
+                Structure = _structure;
+                InChI = _inchi;
+                Description = _description;
+                MeltingPoint = _meltingpoint;
+                BoilingPoint = _boilingpoint;
+            }
+        }
+
+        public static Metadata GetData(string searchterm)
         {
             WebClient client = new WebClient();
             
-            string cid = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{MolecularFormula}/cids/TXT");
+            string cid = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{searchterm}/cids/TXT");
             cid = cid.Substring(0, cid.IndexOf("\n"));
             string chemdata = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/json");
 
             JToken result = JObject.Parse(chemdata)["Record"];
 
-            string name = result["RecordTitle"].Value<string>();
-            foreach(var item in result)
-            {
-            }
-        }
-
-        private static void XmlValidationCallback(object sender, ValidationEventArgs e)
-        {
-            if (e.Severity == XmlSeverityType.Warning) App.Alert($"Warning: {e.Message}");
-            else if (e.Severity == XmlSeverityType.Error) App.Alert($"Error: {e.Message}");
+            return new Metadata
+            (
+                result["RecordTitle"].Value<string>(),
+                result["Section"][2]["Section"][2]["Information"][2]["Value"]["StringWithMarkup"][0]["String"].Value<string>(),
+                result["Section"][2]["Section"][1]["Section"][1]["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>(),
+                result["Section"][2]["Section"][0]["Information"][3]["Value"]["StringWithMarkup"][0]["String"].Value<string>(),
+                result["Section"][3]["Section"][1]["Section"][5]["Information"][1]["Value"]["Number"][0].Value<double>(),
+                result["Section"][3]["Section"][1]["Section"][4]["Information"][1]["Value"]["Number"][0].Value<double>()
+            );
         }
     }
 
