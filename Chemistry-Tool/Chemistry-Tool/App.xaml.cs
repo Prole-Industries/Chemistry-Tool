@@ -5,9 +5,9 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -19,6 +19,9 @@ using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Chemistry_Tool
 {
@@ -316,27 +319,18 @@ namespace Chemistry_Tool
 
         public void GetData()
         {
-            object data;
             WebClient client = new WebClient();
-            //XmlSerializer serialiser = new XmlSerializer(typeof(object));
-            //XmlReader reader = XmlReader.Create("pug_view.xsd");
-            //XmlSchema schema = XmlSchema.Read(reader, XmlValidationCallback);
-
+            
             string cid = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{MolecularFormula}/cids/TXT");
             cid = cid.Substring(0, cid.IndexOf("\n"));
             string chemdata = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/json");
 
-            //XmlReaderSettings dataSettings = new XmlReaderSettings();
-            //dataSettings.Schemas.Add(schema);
-            //dataSettings.ValidationType = ValidationType.Schema;
+            JToken result = JObject.Parse(chemdata)["Record"];
 
-            //using (reader = XmlReader.Create(new StringReader(chemdata), dataSettings))
-            //{
-            //    data = (object)serialiser.Deserialize(reader);
-            //}
-
-            data = JsonSerializer.Deserialize(chemdata, typeof(object));
-
+            string name = result["RecordTitle"].Value<string>();
+            foreach(var item in result)
+            {
+            }
         }
 
         private static void XmlValidationCallback(object sender, ValidationEventArgs e)
