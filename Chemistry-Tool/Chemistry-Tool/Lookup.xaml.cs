@@ -34,8 +34,8 @@ namespace Chemistry_Tool
 
             Description.Text = $"{metadata.Description}";
 
-            MeltingPoint.Text = $"Melting Point: {metadata.MeltingPoint}°C";
-            BoilingPoint.Text = $"Boiling Point: {metadata.BoilingPoint}°C";
+            MeltingPoint.Text = $"Melting Point: {metadata.MeltingPoint}";
+            BoilingPoint.Text = $"Boiling Point: {metadata.BoilingPoint}";
         }
     }
 }

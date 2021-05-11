@@ -323,10 +323,10 @@ namespace Chemistry_Tool
             public string Structure { get; private set; }
             public string InChI { get; private set; }
             public string Description { get; private set; }
-            public double MeltingPoint { get; private set; }
-            public double BoilingPoint { get; private set; }
+            public string MeltingPoint { get; private set; }
+            public string BoilingPoint { get; private set; }
 
-            public Metadata(string _name, string _structure, string _inchi, string _description, double _meltingpoint, double _boilingpoint)
+            public Metadata(string _name, string _structure, string _inchi, string _description, string _meltingpoint, string _boilingpoint)
             {
                 Name = _name;
                 Structure = _structure;
@@ -344,17 +344,20 @@ namespace Chemistry_Tool
             string cid = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{searchterm}/cids/TXT");
             cid = cid.Substring(0, cid.IndexOf("\n"));
             string chemdata = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/json");
+            Regex regex = new Regex(@"-?\d+(\.\d+)? Â°C");
 
             JToken result = JObject.Parse(chemdata)["Record"];
 
+            string name = result["RecordTitle"].Value<string>();
+            string structure = result["Section"][2]["Section"][2]["Information"][2]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+            string inchi = result["Section"][2]["Section"][1]["Section"][1]["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+            string desc = result["Section"][2]["Section"][0]["Information"][3]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+            string melting = result["Section"][3]["Section"][1]["Section"].Where(t => t["TOCHeading"].Value<string>() == "Melting Point").FirstOrDefault()["Information"].Where(t => t["Value"]["StringWithMarkup"] != null).Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()["Value"]["StringWithMarkup"][0]["String"].Value<string>().Replace("Â", "");
+            string boiling = result["Section"][3]["Section"][1]["Section"].Where(t => t["TOCHeading"].Value<string>() == "Boiling Point").FirstOrDefault()["Information"].Where(t => t["Value"]["StringWithMarkup"] != null).Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()["Value"]["StringWithMarkup"][0]["String"].Value<string>().Replace("Â", "");
+
             return new Metadata
             (
-                result["RecordTitle"].Value<string>(),
-                result["Section"][2]["Section"][2]["Information"][2]["Value"]["StringWithMarkup"][0]["String"].Value<string>(),
-                result["Section"][2]["Section"][1]["Section"][1]["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>(),
-                result["Section"][2]["Section"][0]["Information"][3]["Value"]["StringWithMarkup"][0]["String"].Value<string>(),
-                result["Section"][3]["Section"][1]["Section"][5]["Information"][1]["Value"]["Number"][0].Value<double>(),
-                result["Section"][3]["Section"][1]["Section"][4]["Information"][1]["Value"]["Number"][0].Value<double>()
+                name, structure, inchi, desc, melting, boiling
             );
         }
     }
