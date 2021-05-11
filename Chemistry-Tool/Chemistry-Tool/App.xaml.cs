@@ -23,6 +23,8 @@ using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using Chemistry_Tool.PugSoap;
+
 namespace Chemistry_Tool
 {
     /// <summary>
@@ -263,6 +265,8 @@ namespace Chemistry_Tool
         public string MolecularFormula { get; private set; }
         public string MolecularFormulaPretty { get; private set; }
 
+        private static PUG pug_ws = new PUG();
+
         public Chemical(string formula)
         {
             GetElements(formula, 1);
@@ -322,16 +326,16 @@ namespace Chemistry_Tool
             public string Name { get; private set; }
             public string Structure { get; private set; }
             public string InChI { get; private set; }
-            public string Description { get; private set; }
+            public List<string> Descriptions { get; private set; }
             public string MeltingPoint { get; private set; }
             public string BoilingPoint { get; private set; }
 
-            public Metadata(string _name, string _structure, string _inchi, string _description, string _meltingpoint, string _boilingpoint)
+            public Metadata(string _name, string _structure, string _inchi, List<string> _descriptions, string _meltingpoint, string _boilingpoint)
             {
                 Name = _name;
                 Structure = _structure;
                 InChI = _inchi;
-                Description = _description;
+                Descriptions = _descriptions;
                 MeltingPoint = _meltingpoint;
                 BoilingPoint = _boilingpoint;
             }
@@ -340,7 +344,7 @@ namespace Chemistry_Tool
         public static Metadata GetData(string searchterm)
         {
             WebClient client = new WebClient();
-            
+
             string cid = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{searchterm}/cids/TXT");
             cid = cid.Substring(0, cid.IndexOf("\n"));
             string chemdata = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/json");
@@ -348,18 +352,101 @@ namespace Chemistry_Tool
 
             JToken result = JObject.Parse(chemdata)["Record"];
 
+            //string name = result["RecordTitle"].Value<string>();
+            //string structure = result["Section"][2]["Section"][2]["Information"][2]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+            //string inchi = result["Section"][2]["Section"][1]["Section"][1]["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+            //string desc = result["Section"][2]["Section"][0]["Information"][3]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+            //string boiling = result["Section"][3]["Section"][1]["Section"].Where(t => t["TOCHeading"].Value<string>() == "Boiling Point").FirstOrDefault()["Information"].Where(t => t["Value"]["StringWithMarkup"] != null).Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+
             string name = result["RecordTitle"].Value<string>();
-            string structure = result["Section"][2]["Section"][2]["Information"][2]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
-            string inchi = result["Section"][2]["Section"][1]["Section"][1]["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
-            string desc = result["Section"][2]["Section"][0]["Information"][3]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
-            string melting = result["Section"][3]["Section"][1]["Section"].Where(t => t["TOCHeading"].Value<string>() == "Melting Point").FirstOrDefault()["Information"].Where(t => t["Value"]["StringWithMarkup"] != null).Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()["Value"]["StringWithMarkup"][0]["String"].Value<string>().Replace("Â", "");
-            string boiling = result["Section"][3]["Section"][1]["Section"].Where(t => t["TOCHeading"].Value<string>() == "Boiling Point").FirstOrDefault()["Information"].Where(t => t["Value"]["StringWithMarkup"] != null).Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()["Value"]["StringWithMarkup"][0]["String"].Value<string>().Replace("Â", "");
+
+            string structure = result
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Names and Identifiers").FirstOrDefault()
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Molecular Formula").FirstOrDefault()
+                ["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+
+            string inchi = result
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Names and Identifiers").FirstOrDefault()
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Computed Descriptors").FirstOrDefault()
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "InChI").FirstOrDefault()
+                ["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+
+            List<string> descs = new List<string>();
+            foreach(JToken token in result
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Names and Identifiers").FirstOrDefault()
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Record Description").FirstOrDefault()
+                ["Information"])
+            {
+                descs.Add(token["Value"]["StringWithMarkup"][0]["String"].Value<string>());
+            }
+
+            //string melting = result["Section"][3]["Section"][1]["Section"].Where(t => t["TOCHeading"].Value<string>() == "Melting Point").FirstOrDefault()["Information"]
+            //.Where(t => t["Value"]["StringWithMarkup"] != null)
+            //.Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()
+            //["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+
+            string melting = result
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Chemical and Physical Properties").FirstOrDefault()
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Experimental Properties").FirstOrDefault()
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Melting Point").FirstOrDefault()
+                ["Information"]
+                .Where(t => t["Value"]["StringWithMarkup"] != null)
+                .Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()
+                ["Value"]["StringWithMarkup"][0]["String"].Value<string>();
+
+            string boiling = result
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Chemical and Physical Properties").FirstOrDefault()
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Experimental Properties").FirstOrDefault()
+                ["Section"]
+                .Where(t => t["TOCHeading"].Value<string>() == "Boiling Point").FirstOrDefault()
+                ["Information"]
+                .Where(t => t["Value"]["StringWithMarkup"] != null)
+                .Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()
+                ["Value"]["StringWithMarkup"][0]["String"].Value<string>();
 
             return new Metadata
             (
-                name, structure, inchi, desc, melting, boiling
+                name,
+                structure,
+                inchi,
+                descs,
+                melting.Replace("Â", "").Substring(0, melting.IndexOf("°C") + 1),
+                boiling.Replace("Â", "").Substring(0, boiling.IndexOf("°C") + 1)
             );
         }
+
+        //public static Metadata GetData(string searchterm)
+        //{
+        //    WebClient client = new WebClient();
+        //    string cid = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{searchterm}/cids/txt");
+        //    cid = cid.Substring(0, cid.IndexOf("\n"));
+        //    string inchi = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/property/InChIKey/json");
+        //    inchi = JObject.Parse(inchi)["PropertyTable"]["Properties"][0]["InChIKey"].Value<string>();
+
+        //    string key = pug_ws.InputStructure(inchi, FormatType.eFormat_InChI);
+        //    IdentitySearchOptions idOptions = new IdentitySearchOptions()
+        //    {
+        //        eIdentity = IdentityType.eIdentity_SameConnectivity
+        //    };
+        //    LimitsType limits = new LimitsType()
+        //    {
+        //        ListKey = key
+        //    };
+        //    string listkey = pug_ws.IdentitySearch(key, idOptions, limits);
+        //    return new Metadata("test", "NONe", "This/Is/A/Test", "seriously, stop reading yara", "-1K", "hella hot");
+        //}
     }
 
     public class Substance

@@ -32,7 +32,7 @@ namespace Chemistry_Tool
             Structure.Text = $"{metadata.Structure}";
             InChI_Identifier.Text = $"InChI Identifier: {metadata.InChI}";
 
-            Description.Text = $"{metadata.Description}";
+            Description.Text = $"{/*string.Join("\n", metadata.Descriptions.ToArray())*/metadata.Descriptions[0]}";
 
             MeltingPoint.Text = $"Melting Point: {metadata.MeltingPoint}";
             BoilingPoint.Text = $"Boiling Point: {metadata.BoilingPoint}";
