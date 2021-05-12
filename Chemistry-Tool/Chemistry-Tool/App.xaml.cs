@@ -23,8 +23,6 @@ using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using Chemistry_Tool.PugSoap;
-
 namespace Chemistry_Tool
 {
     /// <summary>
@@ -265,8 +263,6 @@ namespace Chemistry_Tool
         public string MolecularFormula { get; private set; }
         public string MolecularFormulaPretty { get; private set; }
 
-        private static PUG pug_ws = new PUG();
-
         public Chemical(string formula)
         {
             GetElements(formula, 1);
@@ -352,21 +348,13 @@ namespace Chemistry_Tool
 
             JToken result = JObject.Parse(chemdata)["Record"];
 
-            //string name = result["RecordTitle"].Value<string>();
-            //string structure = result["Section"][2]["Section"][2]["Information"][2]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
-            //string inchi = result["Section"][2]["Section"][1]["Section"][1]["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
-            //string desc = result["Section"][2]["Section"][0]["Information"][3]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
-            //string boiling = result["Section"][3]["Section"][1]["Section"].Where(t => t["TOCHeading"].Value<string>() == "Boiling Point").FirstOrDefault()["Information"].Where(t => t["Value"]["StringWithMarkup"] != null).Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()["Value"]["StringWithMarkup"][0]["String"].Value<string>();
-
-            string name = result["RecordTitle"].Value<string>();
-
+            string name = Regex.Replace(result["RecordTitle"].Value<string>(), @"(?<=[ \-,])[a-z]", new MatchEvaluator(CapitaliseSelective));
             string structure = result
                 ["Section"]
                 .Where(t => t["TOCHeading"].Value<string>() == "Names and Identifiers").FirstOrDefault()
                 ["Section"]
                 .Where(t => t["TOCHeading"].Value<string>() == "Molecular Formula").FirstOrDefault()
                 ["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
-
             string inchi = result
                 ["Section"]
                 .Where(t => t["TOCHeading"].Value<string>() == "Names and Identifiers").FirstOrDefault()
@@ -386,11 +374,6 @@ namespace Chemistry_Tool
             {
                 descs.Add(token["Value"]["StringWithMarkup"][0]["String"].Value<string>());
             }
-
-            //string melting = result["Section"][3]["Section"][1]["Section"].Where(t => t["TOCHeading"].Value<string>() == "Melting Point").FirstOrDefault()["Information"]
-            //.Where(t => t["Value"]["StringWithMarkup"] != null)
-            //.Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()
-            //["Value"]["StringWithMarkup"][0]["String"].Value<string>();
 
             string melting = result
                 ["Section"]
@@ -427,26 +410,10 @@ namespace Chemistry_Tool
             );
         }
 
-        //public static Metadata GetData(string searchterm)
-        //{
-        //    WebClient client = new WebClient();
-        //    string cid = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{searchterm}/cids/txt");
-        //    cid = cid.Substring(0, cid.IndexOf("\n"));
-        //    string inchi = client.DownloadString($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/property/InChIKey/json");
-        //    inchi = JObject.Parse(inchi)["PropertyTable"]["Properties"][0]["InChIKey"].Value<string>();
-
-        //    string key = pug_ws.InputStructure(inchi, FormatType.eFormat_InChI);
-        //    IdentitySearchOptions idOptions = new IdentitySearchOptions()
-        //    {
-        //        eIdentity = IdentityType.eIdentity_SameConnectivity
-        //    };
-        //    LimitsType limits = new LimitsType()
-        //    {
-        //        ListKey = key
-        //    };
-        //    string listkey = pug_ws.IdentitySearch(key, idOptions, limits);
-        //    return new Metadata("test", "NONe", "This/Is/A/Test", "seriously, stop reading yara", "-1K", "hella hot");
-        //}
+        private static string CapitaliseSelective(Match match)
+        {
+            return match.Value.ToUpper();
+        }
     }
 
     public class Substance

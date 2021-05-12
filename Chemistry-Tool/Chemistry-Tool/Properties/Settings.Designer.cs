@@ -22,15 +22,5 @@ namespace Chemistry_Tool.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://pubchem.ncbi.nlm.nih.gov/pug_soap/pug_soap.cgi")]
-        public string Chemistry_Tool_PugSoap_PUG {
-            get {
-                return ((string)(this["Chemistry_Tool_PugSoap_PUG"]));
-            }
-        }
     }
 }

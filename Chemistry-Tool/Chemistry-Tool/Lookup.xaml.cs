@@ -26,16 +26,35 @@ namespace Chemistry_Tool
 
         public void SearchForChemical(object sender, RoutedEventArgs e)
         {
+            Information.Visibility = Visibility.Hidden;
+            SearchButton.Content = "Working...";
+
             Chemical.Metadata metadata = Chemical.GetData(SearchTerm.Text);
 
             Name.Text = $"{metadata.Name}";
             Structure.Text = $"{metadata.Structure}";
             InChI_Identifier.Text = $"InChI Identifier: {metadata.InChI}";
 
-            Description.Text = $"{/*string.Join("\n", metadata.Descriptions.ToArray())*/metadata.Descriptions[0]}";
+            for(int x = 0; x < 3; x++)
+            {
+                try
+                {
+                    string desc = metadata.Descriptions[x];
+                    Descriptions.Children.Add(new TextBlock() { Style = (Style)Application.Current.FindResource("GenericTextBox"), Text = desc });
+                    Descriptions.Children.Add(new Separator());
+                }
+                catch(ArgumentOutOfRangeException)
+                {
+                    break;
+                }
+            }
+            Descriptions.Children.RemoveAt(Descriptions.Children.Count - 1);
 
             MeltingPoint.Text = $"Melting Point: {metadata.MeltingPoint}";
             BoilingPoint.Text = $"Boiling Point: {metadata.BoilingPoint}";
+
+            SearchButton.Content = "Search";
+            Information.Visibility = Visibility.Visible;
         }
     }
 }

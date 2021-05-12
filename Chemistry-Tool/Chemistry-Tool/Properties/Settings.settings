@@ -1,9 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Chemistry_Tool.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles />
-  <Settings>
-    <Setting Name="Chemistry_Tool_PugSoap_PUG" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">https://pubchem.ncbi.nlm.nih.gov/pug_soap/pug_soap.cgi</Value>
-    </Setting>
-  </Settings>
+  <Settings />
 </SettingsFile>
