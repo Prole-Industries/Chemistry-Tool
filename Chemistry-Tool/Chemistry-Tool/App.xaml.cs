@@ -322,16 +322,14 @@ namespace Chemistry_Tool
             public string Name { get; private set; }
             public string Structure { get; private set; }
             public string InChI { get; private set; }
-            public List<string> Descriptions { get; private set; }
             public string MeltingPoint { get; private set; }
             public string BoilingPoint { get; private set; }
 
-            public Metadata(string _name, string _structure, string _inchi, List<string> _descriptions, string _meltingpoint, string _boilingpoint)
+            public Metadata(string _name, string _structure, string _inchi, string _meltingpoint, string _boilingpoint)
             {
                 Name = _name;
                 Structure = _structure;
                 InChI = _inchi;
-                Descriptions = _descriptions;
                 MeltingPoint = _meltingpoint;
                 BoilingPoint = _boilingpoint;
             }
@@ -364,17 +362,6 @@ namespace Chemistry_Tool
                 .Where(t => t["TOCHeading"].Value<string>() == "InChI").FirstOrDefault()
                 ["Information"][0]["Value"]["StringWithMarkup"][0]["String"].Value<string>();
 
-            List<string> descs = new List<string>();
-            foreach(JToken token in result
-                ["Section"]
-                .Where(t => t["TOCHeading"].Value<string>() == "Names and Identifiers").FirstOrDefault()
-                ["Section"]
-                .Where(t => t["TOCHeading"].Value<string>() == "Record Description").FirstOrDefault()
-                ["Information"])
-            {
-                descs.Add(token["Value"]["StringWithMarkup"][0]["String"].Value<string>());
-            }
-
             string melting = result
                 ["Section"]
                 .Where(t => t["TOCHeading"].Value<string>() == "Chemical and Physical Properties").FirstOrDefault()
@@ -404,7 +391,6 @@ namespace Chemistry_Tool
                 name,
                 structure,
                 inchi,
-                descs,
                 melting.Replace("Â", "").Substring(0, melting.IndexOf("°C") + 1),
                 boiling.Replace("Â", "").Substring(0, boiling.IndexOf("°C") + 1)
             );

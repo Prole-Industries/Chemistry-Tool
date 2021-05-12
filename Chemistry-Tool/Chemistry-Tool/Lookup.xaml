@@ -9,7 +9,8 @@
     <Grid Background="#FF252525">
         <Grid.RowDefinitions>
             <RowDefinition Height="5*"/>
-            <RowDefinition Height="95*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="90*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -21,21 +22,19 @@
             <TextBox x:Name="SearchTerm" Grid.Column="1" Margin="5"/>
             <Button x:Name="SearchButton" Content="Search" Click="SearchForChemical" Style="{DynamicResource GenericButton}" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
-        <Grid Grid.Row="1" Margin="10">
+        <Grid Grid.Row="1">
+            <ProgressBar x:Name="ProgressBar" Visibility="Hidden" IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10"/>
+        </Grid>
+        <Grid Grid.Row="2" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60*"/>
                 <ColumnDefinition Width="40*"/>
             </Grid.ColumnDefinitions>
-            <ScrollViewer Template="{DynamicResource GenericScroll}">
-                <StackPanel x:Name="Information" Grid.Column="0" Margin="10" Visibility="Hidden">
+            <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Column="0">
+                <StackPanel x:Name="Information" Visibility="Hidden" Margin="10">
                     <TextBlock x:Name="Name" Style="{DynamicResource GenericTextBox}" FontSize="20"/>
                     <TextBlock x:Name="Structure" Style="{DynamicResource GenericTextBox}"/>
                     <TextBlock x:Name="InChI_Identifier" Style="{DynamicResource GenericTextBox}"/>
-                    <Separator/>
-                    <Expander Header="Descriptions" HorizontalAlignment="Stretch">
-                        <StackPanel x:Name="Descriptions" HorizontalAlignment="Left" Margin="10">
-                        </StackPanel>
-                    </Expander>
                     <Separator/>
                     <TextBlock x:Name="MeltingPoint" Style="{DynamicResource GenericTextBox}"/>
                     <TextBlock x:Name="BoilingPoint" Style="{DynamicResource GenericTextBox}"/>

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Chemistry_Tool
 {
@@ -19,6 +22,8 @@ namespace Chemistry_Tool
     /// </summary>
     public partial class Lookup : Window
     {
+        BackgroundWorker Worker;
+
         public Lookup()
         {
             InitializeComponent();
@@ -27,34 +32,42 @@ namespace Chemistry_Tool
         public void SearchForChemical(object sender, RoutedEventArgs e)
         {
             Information.Visibility = Visibility.Hidden;
-            SearchButton.Content = "Working...";
+            ProgressBar.Visibility = Visibility.Visible;
+            SearchButton.IsEnabled = false;
 
-            Chemical.Metadata metadata = Chemical.GetData(SearchTerm.Text);
+            Worker = new BackgroundWorker();
+            //Worker.ProgressChanged += ProgressChanged;
+            Worker.DoWork += DoWork;
+            //Worker.WorkerReportsProgress = true;
+            Worker.RunWorkerCompleted += WorkDone;
+            Worker.RunWorkerAsync();
+        }
 
-            Name.Text = $"{metadata.Name}";
-            Structure.Text = $"{metadata.Structure}";
-            InChI_Identifier.Text = $"InChI Identifier: {metadata.InChI}";
-
-            for(int x = 0; x < 3; x++)
+        private void DoWork(object sender, DoWorkEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
             {
-                try
-                {
-                    string desc = metadata.Descriptions[x];
-                    Descriptions.Children.Add(new TextBlock() { Style = (Style)Application.Current.FindResource("GenericTextBox"), Text = desc });
-                    Descriptions.Children.Add(new Separator());
-                }
-                catch(ArgumentOutOfRangeException)
-                {
-                    break;
-                }
-            }
-            Descriptions.Children.RemoveAt(Descriptions.Children.Count - 1);
+                Chemical.Metadata metadata = Chemical.GetData(SearchTerm.Text);
 
-            MeltingPoint.Text = $"Melting Point: {metadata.MeltingPoint}";
-            BoilingPoint.Text = $"Boiling Point: {metadata.BoilingPoint}";
+                Name.Text = $"{metadata.Name}";
+                Structure.Text = $"{metadata.Structure}";
+                InChI_Identifier.Text = $"InChI Identifier: {metadata.InChI}";
 
-            SearchButton.Content = "Search";
+                MeltingPoint.Text = $"Melting Point: {metadata.MeltingPoint}";
+                BoilingPoint.Text = $"Boiling Point: {metadata.BoilingPoint}";
+            });
+        }
+
+        private void ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            ProgressBar.Value = e.ProgressPercentage;
+        }
+
+        private void WorkDone(object sender, RunWorkerCompletedEventArgs e)
+        {
             Information.Visibility = Visibility.Visible;
+            ProgressBar.Visibility = Visibility.Hidden;
+            SearchButton.IsEnabled = true;
         }
     }
 }
