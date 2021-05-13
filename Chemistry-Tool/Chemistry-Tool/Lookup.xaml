@@ -23,7 +23,7 @@
             <Button x:Name="SearchButton" Content="Search" Click="SearchForChemical" Style="{DynamicResource GenericButton}" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
         <Grid Grid.Row="1">
-            <ProgressBar x:Name="ProgressBar" Visibility="Hidden" IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10"/>
+            <TextBlock x:Name="ProgressBox" Text="Working..." Style="{DynamicResource GenericTextBox}" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
         </Grid>
         <Grid Grid.Row="2" Margin="10">
             <Grid.ColumnDefinitions>
