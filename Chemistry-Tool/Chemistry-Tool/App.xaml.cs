@@ -262,6 +262,7 @@ namespace Chemistry_Tool
         public Dictionary<Atom, int> Elements { get; private set; } = new Dictionary<Atom, int>();
         public string MolecularFormula { get; private set; }
         public string MolecularFormulaPretty { get; private set; }
+        public double MolarWeight { get; private set; } = 0;
 
         public Chemical(string formula)
         {
@@ -274,6 +275,11 @@ namespace Chemistry_Tool
                 formula = formula.Replace(Convert.ToChar(x), Convert.ToChar(x+8272));
             }
             MolecularFormulaPretty = formula;
+
+            foreach(KeyValuePair<Atom, int> kvp in Elements)
+            {
+                MolarWeight += kvp.Key.MassNumber * kvp.Value;
+            }
         }
 
         private void GetElements(string formula, int number)

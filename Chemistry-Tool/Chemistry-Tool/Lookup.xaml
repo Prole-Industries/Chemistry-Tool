@@ -19,27 +19,29 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Search Term:" Style="{DynamicResource GenericTextBox}" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <TextBox x:Name="SearchTerm" Grid.Column="1" Margin="5"/>
+            <TextBox x:Name="SearchTerm" Style="{DynamicResource GenericTextEntry}" Grid.Column="1" Margin="5" HorizontalAlignment="Stretch"/>
             <Button x:Name="SearchButton" Content="Search" Click="SearchForChemical" Style="{DynamicResource GenericButton}" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Grid>
         <Grid Grid.Row="1">
             <TextBlock x:Name="ProgressBox" Text="Working..." Style="{DynamicResource GenericTextBox}" Visibility="Hidden" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
         </Grid>
-        <Grid Grid.Row="2" Margin="10">
+        <Grid x:Name="Information" Visibility="Hidden" Grid.Row="2" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="60*"/>
                 <ColumnDefinition Width="40*"/>
             </Grid.ColumnDefinitions>
             <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Column="0">
-                <StackPanel x:Name="Information" Visibility="Hidden" Margin="10">
-                    <TextBlock x:Name="Name" Style="{DynamicResource GenericTextBox}" FontSize="20"/>
-                    <TextBlock x:Name="Structure" Style="{DynamicResource GenericTextBox}"/>
-                    <TextBlock x:Name="InChI_Identifier" Style="{DynamicResource GenericTextBox}"/>
+                <StackPanel Margin="10">
+                    <TextBlock x:Name="Name" Style="{DynamicResource GenericTextBox}" FontSize="32" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="Structure" Style="{DynamicResource GenericTextBox}" FontSize="20" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="InChI_Identifier" Style="{DynamicResource GenericTextBox}" HorizontalAlignment="Left"/>
                     <Separator/>
-                    <TextBlock x:Name="MeltingPoint" Style="{DynamicResource GenericTextBox}"/>
-                    <TextBlock x:Name="BoilingPoint" Style="{DynamicResource GenericTextBox}"/>
+                    <TextBlock x:Name="MeltingPoint" Style="{DynamicResource GenericTextBox}" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="BoilingPoint" Style="{DynamicResource GenericTextBox}" HorizontalAlignment="Left"/>
+                    <TextBlock x:Name="MolarWeight" Style="{DynamicResource GenericTextBox}" HorizontalAlignment="Left"/>
                 </StackPanel>
             </ScrollViewer>
+            <Image x:Name="StructureImage" Grid.Column="1"/>
         </Grid>
     </Grid>
 </Window>
