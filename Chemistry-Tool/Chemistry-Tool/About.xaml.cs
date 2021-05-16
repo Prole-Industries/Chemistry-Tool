@@ -28,7 +28,7 @@ namespace Chemistry_Tool
 
         public void EH_OpenSourceCode(object sender, RequestNavigateEventArgs e)
         {
-            System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);
+            System.Diagnostics.Process.Start(e.Uri.AbsoluteUri);    //Open GitHub repos
         }
     }
 }

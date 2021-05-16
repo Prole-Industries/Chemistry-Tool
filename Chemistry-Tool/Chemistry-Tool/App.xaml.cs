@@ -30,28 +30,42 @@ namespace Chemistry_Tool
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Shorthand method for creating an error dialog box
+        /// </summary>
+        /// <param name="message">Message to be shown to the user</param>
         public static void Alert(string message)
         {
             MessageBox.Show(message, "Alert", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
+        /// <summary>
+        /// Generates a group of controls which allows a user to enter a chemical formula, moles, and concentration
+        /// </summary>
+        /// <returns>A grid control group for chemical formula, moles, and concentration</returns>
         public static UIElement GenericChemical()
         {
+            //Build a parent stackpanel to contain the controls
             StackPanel g = new StackPanel
             {
                 Background = new SolidColorBrush(Color.FromArgb(0x44, 0x99, 0x99, 0x99)),
                 Margin = new Thickness(0, 5, 0, 5)
             };
 
-            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Chemical Formula:" });
-            g.Children.Add(new TextBox() { ToolTip = "Formula of Chemical" });
-            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Concentration:" });
-            g.Children.Add(new TextBox() { ToolTip = "Concentration of Chemical (mol dm⁻³)" });
-            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Moles:" });
-            g.Children.Add(new TextBox() { ToolTip = "Moles of Chemical" });
+            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Chemical Formula:" });  //Label for chemical formula
+            g.Children.Add(new TextBox() { ToolTip = "Formula of Chemical" });                                                      //Entry for chemical formula
+            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Concentration:" });     //Label for concentration
+            g.Children.Add(new TextBox() { ToolTip = "Concentration of Chemical (mol dm⁻³)" });                                     //Entry for concentration
+            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Moles:" });             //Label for moles
+            g.Children.Add(new TextBox() { ToolTip = "Moles of Chemical" });                                                        //Entry for moles
             return g;
         }
 
+        /// <summary>
+        /// Checks if all boxes of a generic chemical control are filled in and valid
+        /// </summary>
+        /// <param name="target">The generic chemical control (should be a stack panel, made from GenericChemical();)</param>
+        /// <returns></returns>
         public static bool IsChemicalValid(StackPanel target)
         {
             if (((TextBox)target.Children[1]).Text == "") { App.Alert("One or more chemical names are missing"); return false; }
@@ -60,6 +74,11 @@ namespace Chemistry_Tool
             return true;
         }
 
+        /// <summary>
+        /// Matches a regex against a numerical value (accepts floating points)
+        /// </summary>
+        /// <param name="target">Textbox containing text to be checked</param>
+        /// <returns></returns>
         public static bool IsNumValid(TextBox target)
         {
             Regex regex = new Regex(@"^(\d+)((.)?(\d+))?$", RegexOptions.Multiline);
@@ -67,24 +86,64 @@ namespace Chemistry_Tool
         }
     }
 
+    /// <summary>
+    /// Describes a singular Atom/Ion
+    /// </summary>
     public class Atom
     {
+        /// <summary>
+        /// Atomic Symbol of the atom (e.g. H, Na, etc.)
+        /// </summary>
         public string Symbol { get; private set; }
+        /// <summary>
+        /// Name of the atom (e.g. Hydrogen, Sodium, etc.)
+        /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Atomic number of the atom (proton count)
+        /// </summary>
         public int AtomicNumber { get; private set; }
+        /// <summary>
+        /// Mass number of the atom (nucleon count)
+        /// </summary>
         public double MassNumber { get; private set; }
 
+        /// <summary>
+        /// Period of the atom
+        /// </summary>
         public int Period { get; private set; }
+        /// <summary>
+        /// Group of the atom
+        /// </summary>
         public int Group { get; private set; }
 
+        /// <summary>
+        /// Electron configuration of the atom
+        /// </summary>
+        /// <remarks>Not yet implemented</remarks>
         public List<int> ElectronConfig { get; set; }
 
+        /// <summary>
+        /// The category of the atom (e.g. Alkali metal, Halogen, etc.)
+        /// </summary>
         public Categories Category { get; private set; }
 
-        //This is only to be used as an exception case if the atom entered is invalid
+        /// <summary>
+        /// Only to be used if the data entered is invalid
+        /// </summary>
         public Atom() { }
 
+        /// <summary>
+        /// Constructor for an atom
+        /// </summary>
+        /// <param name="_symbol">Atomic Symbol of the atom</param>
+        /// <param name="_name">Name of the atom</param>
+        /// <param name="_anum">Atomic Number of the atom</param>
+        /// <param name="_mnum">Mass Number of the atom</param>
+        /// <param name="_period">Period of the atom</param>
+        /// <param name="_group">Group of the atom</param>
+        /// <param name="_category">Category of the atom</param>
         public Atom(string _symbol, string _name, int _anum, double _mnum, int _period, int _group, Categories _category)
         {
             Symbol = _symbol;
@@ -96,6 +155,9 @@ namespace Chemistry_Tool
             Category = _category;
         }
 
+        /// <summary>
+        /// Catgeories of atoms (e.g. Alkali Metals, Halogens)
+        /// </summary>
         public enum Categories
         {
             AlkaliMetal,
@@ -110,15 +172,20 @@ namespace Chemistry_Tool
             Actinide,
         }
 
+        /// <summary>
+        /// Returns an atom by entering its atomic symbol
+        /// </summary>
+        /// <param name="symbol">Symbol to be searched for</param>
+        /// <returns>An atom with the symbol passed</returns>
         public static Atom GetBySymbol(string symbol)
         {
             try
             {
-                return PeriodicTable[PeriodicTable.FindIndex(f => f.Symbol == symbol)];
+                return PeriodicTable[PeriodicTable.FindIndex(t => t.Symbol == symbol)]; //Get atom by searching the periodic table for the symbol
             }
             catch(ArgumentOutOfRangeException)
             {
-                throw new Exception("Symbol could not be resolved");
+                throw new Exception("Symbol could not be resolved");                    //If symbol does not exist, then throw an error
             }
         }
 
@@ -248,73 +315,102 @@ namespace Chemistry_Tool
             new Atom("Ds",  "Darmstadtium", 110,    271,    7,      0,      Categories.TransitionMetal),
             new Atom("Rg",  "Roentgenium",  111,    272,    7,      0,      Categories.TransitionMetal),
             new Atom("Cn",  "Copernicium",  112,    285,    7,      0,      Categories.TransitionMetal),
-            new Atom("Nh",  "Nihonium",     113,    286,    7,      3,      Categories.PostTransitionMetal),
-            new Atom("Fl",  "Flerovium",    114,    289,    7,      4,      Categories.PostTransitionMetal),
-            new Atom("Mc",  "Moscovium",    115,    289,    7,      5,      Categories.PostTransitionMetal),
-            new Atom("Lv",  "Livermorium",  116,    293,    7,      6,      Categories.PostTransitionMetal),
+            new Atom("Nh",  "Nihonium",     113,    286,    7,      3,      Categories.PostTransitionMetal),    //Executive decision
+            new Atom("Fl",  "Flerovium",    114,    289,    7,      4,      Categories.PostTransitionMetal),    //Executive decision
+            new Atom("Mc",  "Moscovium",    115,    289,    7,      5,      Categories.PostTransitionMetal),    //Executive decision
+            new Atom("Lv",  "Livermorium",  116,    293,    7,      6,      Categories.PostTransitionMetal),    //Executive decision
             new Atom("Ts",  "Tennessine",   117,    294,    7,      7,      Categories.Halogen),
             new Atom("Og",  "Oganesson",    118,    294,    7,      8,      Categories.NobleGas)
         };
     }
 
+    /// <summary>
+    /// Describes a chemical
+    /// </summary>
     public class Chemical
     {
+        /// <summary>
+        /// Dictionary of all elements in the atom and the amount of atoms
+        /// </summary>
         public Dictionary<Atom, int> Elements { get; private set; } = new Dictionary<Atom, int>();
+        /// <summary>
+        /// The simple, parse-safe version of the formula
+        /// </summary>
         public string MolecularFormula { get; private set; }
+        /// <summary>
+        /// The formula containing subscript
+        /// </summary>
         public string MolecularFormulaPretty { get; private set; }
+        /// <summary>
+        /// The molar weight of the chemical
+        /// </summary>
         public double MolarWeight { get; private set; } = 0;
 
+        /// <summary>
+        /// Constructor for a chemical object
+        /// </summary>
+        /// <param name="formula">The parse-safe formula of the chemical (no subscript)</param>
         public Chemical(string formula)
         {
-            GetElements(formula, 1);
+            GetElements(formula, 1);    //Find the elements of the chemical (parses formula), number is 1 because it needs to satisfy the recursive parameter
 
-            MolecularFormula = formula;
+            MolecularFormula = formula; //Molecular formula (parse-safe) is set to the constructor parameter
             
-            for(int x = 48; x < 58; x++)
+            for(int x = 48; x < 58; x++)    //Converts unicode 0-9 to subscript 0-9 by shifting their unicode values
             {
-                formula = formula.Replace(Convert.ToChar(x), Convert.ToChar(x+8272));
+                formula = formula.Replace(Convert.ToChar(x), Convert.ToChar(x+8272));   //Iterative, shifts the standard numerals to subscript
             }
-            MolecularFormulaPretty = formula;
+            MolecularFormulaPretty = formula;   //Set this replaced formula to be the pretty formula
 
             foreach(KeyValuePair<Atom, int> kvp in Elements)
             {
-                MolarWeight += kvp.Key.MassNumber * kvp.Value;
+                MolarWeight += kvp.Key.MassNumber * kvp.Value;  //Find molar weight by computing a total of the atomic weights of each of the atoms
             }
         }
 
+        /// <summary>
+        /// Parses the standard formula to develop the Elements dictionary
+        /// </summary>
+        /// <param name="formula">Formula to be parsed</param>
+        /// <param name="number">Number of groups (if multiple ionic groups exist)</param>
         private void GetElements(string formula, int number)
         {
-            string elementRegex = @"[A-Z][a-z]?\d*|(?<!\([^)]*)\(.*\)\d+(?![^(]*\))";
-            string validateRegex = $"({elementRegex})+";
+            string elementRegex = @"[A-Z][a-z]?\d*|(?<!\([^)]*)\(.*\)\d+(?![^(]*\))";   //Used to isolate atoms or groups of atoms, and their counts if applicable
+            string validateRegex = $"({elementRegex})+";                                //Used to check if the formula is legal
 
             if (!Regex.IsMatch(formula, validateRegex))
             {
-                App.Alert("Formula could not be successfully parsed");
+                App.Alert("Formula could not be successfully parsed");                  //Throws if the formula passed is illegal
                 return;
             }
 
-            foreach (Match match in Regex.Matches(formula, elementRegex))
+            foreach (Match match in Regex.Matches(formula, elementRegex))               //Foreach atom or atom group found in the formula
             {
-                string mstring = match.ToString();
-                if (mstring.Contains("("))
+                string mstring = match.ToString();  //String representation of the match, prevents having to run the same function call continuously
+                if (mstring.Contains("("))          //All atom group matches contain an open bracket, so if it exists...
                 {
+                                                    //...run this function recursively on the atom group, by isolating the atom group and its count.
                     GetElements(mstring.Substring(1, mstring.Length - mstring.LastIndexOf(")") + 1), Convert.ToInt32(mstring.Substring(mstring.LastIndexOf(")")+1)));
                 }
-                else
+                else    //Enters if the match isn't an atom group
                 {
-                    string symbol = Regex.Replace(mstring, @"\d*", string.Empty);
-                    int count =
+                    string symbol = Regex.Replace(mstring, @"\d*", string.Empty);       //Atom symbol is found by removing all numerics
+                    int count =                                                         //Ternary logic operator; set the count to the number after the symbol if it exists, else make it 1
                         Regex.Replace(mstring, @"[A-Za-z]", string.Empty) != "" ?
                         int.Parse(Regex.Replace(mstring, @"[A-Za-z]", string.Empty)) :
                         1;
-                    Atom genericAtom = Atom.GetBySymbol(symbol);
+                    Atom genericAtom = Atom.GetBySymbol(symbol);                        //Build an atom by the given symbol
 
-                    if (Elements.ContainsKey(genericAtom)) Elements[genericAtom] += (count * number);
-                    else Elements.Add(genericAtom, count * number);
+                    if (Elements.ContainsKey(genericAtom)) Elements[genericAtom] += (count * number);   //If the atom is already present in the Elements dictonary, increase the associate int by count * number of atom groups
+                    else Elements.Add(genericAtom, count * number);                                     //If the atom doesn't exist in Elements, add the Atom to it and set its inital associate int to count * number of atom groups
                 }
             }
         }
 
+        /// <summary>
+        /// Prints out a list of atoms present as well as the number of atoms present
+        /// </summary>
+        /// <remarks>Debug function</remarks>
         public void ResolveElements()
         {
             foreach (KeyValuePair<Atom, int> element in Elements)
@@ -323,6 +419,9 @@ namespace Chemistry_Tool
             }
         }
 
+        /// <summary>
+        /// Holds information about the chemical in a human-readable way.
+        /// </summary>
         public class Metadata
         {
             public string Name { get; private set; }
@@ -331,6 +430,14 @@ namespace Chemistry_Tool
             public string MeltingPoint { get; private set; }
             public string BoilingPoint { get; private set; }
 
+            /// <summary>
+            /// Constructor for Metadata class
+            /// </summary>
+            /// <param name="_name">Name of chemical</param>
+            /// <param name="_structure">Structure of chemical (equivalent to MolecularFormula property of Chemical)</param>
+            /// <param name="_inchi">IUPAC International Chemical Identifier</param>
+            /// <param name="_meltingpoint">Melting point of the chemical (°C)</param>
+            /// <param name="_boilingpoint">Boiling point of the chemical (°C)</param>
             public Metadata(string _name, string _structure, string _inchi, string _meltingpoint, string _boilingpoint)
             {
                 Name = _name;
@@ -342,19 +449,35 @@ namespace Chemistry_Tool
         }
     }
 
+    /// <summary>
+    /// Describes quantities of a chemical
+    /// </summary>
     public class Substance
     {
+        /// <summary>
+        /// Subject chemical
+        /// </summary>
         public Chemical Chemical { get; private set; }
+        /// <summary>
+        /// Concentration of the chemical in mol dm^-3
+        /// </summary>
         public double Concentration { get; private set; }
+        /// <summary>
+        /// Moles of the chemical present
+        /// </summary>
         public double Moles { get; private set; }
 
+        /// <summary>
+        /// Constructor for Substance
+        /// </summary>
+        /// <param name="sp">Stackpanel to be parsed to build the substance</param>
         public Substance(StackPanel sp)
         {
             try
             {
-                Chemical = new Chemical(((TextBox)sp.Children[1]).Text);
-                Concentration = double.Parse(((TextBox)sp.Children[3]).Text);
-                Moles = double.Parse(((TextBox)sp.Children[5]).Text);
+                Chemical = new Chemical(((TextBox)sp.Children[1]).Text);        //References first text entry control
+                Concentration = double.Parse(((TextBox)sp.Children[3]).Text);   //References second text entry control
+                Moles = double.Parse(((TextBox)sp.Children[5]).Text);           //References third text entry control
             }
             catch
             {
