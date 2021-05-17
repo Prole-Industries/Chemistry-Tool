@@ -481,7 +481,7 @@ namespace Chemistry_Tool
             }
             catch
             {
-                App.Alert("Substance cannot be resolved.");
+                App.Alert("Substance cannot be resolved.");                     //If parsing unsuccessful, alert user
             }
         }
     }

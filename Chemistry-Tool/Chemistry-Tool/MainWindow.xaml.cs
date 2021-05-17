@@ -23,34 +23,25 @@ namespace Chemistry_Tool
         public MainWindow()
         {
             InitializeComponent();
-#pragma warning disable IDE0059
-            //            Chemical chem1 = new Chemical("C");
-            //            Chemical chem2 = new Chemical("O2");
-            //            Chemical chem3 = new Chemical("CO2");
-            //            Chemical chem4 = new Chemical("Al2Cl3");
-            //            Chemical chem5 = new Chemical("OS");
-            //            Chemical chem6 = new Chemical("Os");
-            //            Chemical chem7 = new Chemical("HCOOH");
-            //            Chemical chem8 = new Chemical("Ca(NO3)2");
-
-            //Simple esterification test case
-            Chemical r1 = new Chemical("CH3COOH");
-            Chemical r2 = new Chemical("CH3CH2OH");
-            Chemical p1 = new Chemical("CH3COOCH2CH3");
-            Chemical p2 = new Chemical("H2O");
-#pragma warning restore IDE0059
+            //Put any test logic here
         }
 
+        /// <summary>
+        /// Called when an app button is clicked
+        /// </summary>
         public void AppLoader(object sender, RoutedEventArgs e)
         {
-            AppData.Visibility = Visibility.Visible;
-            AppName.Text = ((Button)sender).Content.ToString();
+            AppData.Visibility = Visibility.Visible;                //Sets AppData control to visible
+            AppName.Text = ((Button)sender).Content.ToString();     //Sets the title of the AppData control to be the app name
         }
 
+        /// <summary>
+        /// Called when launch is clicked
+        /// </summary>
         public void LaunchApp(object sender, RoutedEventArgs e)
         {
-            Window opener;
-            switch(AppName.Text)
+            Window opener;          //Create a generic window to be loaded with the specific app
+            switch(AppName.Text)    //Load a certain app window into opener, determined by casing the appname
             {
                 case "Reversible Reaction Tool":
                     opener = new ReversibleReactionTool();
@@ -64,24 +55,33 @@ namespace Chemistry_Tool
                     opener = new Lookup();
                     break;
 
-                default:
+                default:    //Shouldn't run, but here if you need it
                     throw new NotImplementedException($"Specified tool of name \"{AppName.Text}\" has not yet been implemented.");
             }
 
-            opener.Show();
+            opener.Show();  //Reveal window loaded with specified app
         }
 
+        /// <summary>
+        /// Reveals about window
+        /// </summary>
         public void EH_About(object sender, RoutedEventArgs e)
         {
             About about = new About();
             about.Show();
         }
 
+        /// <summary>
+        /// Reveals settings window
+        /// </summary>
         public void EH_OpenSettings(object sender, RoutedEventArgs e)
         {
 
         }
 
+        /// <summary>
+        /// Opens website
+        /// </summary>
         public void EH_GoToWebsite(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.Start("http://www.proleindustries.com");

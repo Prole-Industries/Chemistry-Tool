@@ -90,7 +90,7 @@ namespace Chemistry_Tool
                      * really really annoys me to the point of pure anger. Also PUG-SOAP, which is meant to integrate really well into C# .NET doens't actually work
                      * due to obselete Web References.
                      * 
-                     * TL;DR: This is a mess, I'm mightily cheesed, Die well brave warrior.
+                     * TL;DR: This is a mess, I'm mightily cheesed, Die well brave warrior. (Trust me bro)
                      */
                     string name = Regex.Replace(result["RecordTitle"].Value<string>(), @"(?<=[ \-,])[a-z]", new MatchEvaluator(CapitaliseSelective));
                     string structure = result
@@ -132,8 +132,10 @@ namespace Chemistry_Tool
                         .Where(t => regex.IsMatch(t["Value"]["StringWithMarkup"][0]["String"].Value<string>())).FirstOrDefault()
                         ["Value"]["StringWithMarkup"][0]["String"].Value<string>().Replace("Â", "");
 
+                    //Create a chemical from the structural formula (guaranteed to be parse-safe) to get molar weight
                     Chemical homechem = new Chemical(structure);
 
+                    //Set labels to have the given properties
                     Name.Text = $"{name}";
                     Structure.Text = $"{homechem.MolecularFormulaPretty}";
                     InChI_Identifier.Text = $"InChI Identifier: {inchi}";
@@ -141,37 +143,48 @@ namespace Chemistry_Tool
                     BoilingPoint.Text = $"Boiling Point: {boiling.Substring(0, boiling.IndexOf("°C") + 2)}";
                     MolarWeight.Text = $"Molar Weight: {homechem.MolarWeight}";
 
+                    //Get a bitmap image of the chemical structure
                     BitmapImage bitmap = new BitmapImage();
                     bitmap.BeginInit();
                     bitmap.UriSource = new Uri($"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/png");
                     bitmap.CacheOption = BitmapCacheOption.OnLoad;
                     bitmap.EndInit();
+                    //Place the bitmap into the structure image control
                     StructureImage.Source = bitmap;
                 }
+                //Information gathering can throw exceptions, these get handled here
                 catch(Exception _ex)
                 {
-                    ExceptionPresent = true;
-                    switch(_ex)
+                    ExceptionPresent = true;    //Indicates that exception has been run
+                    switch(_ex)                 //Check type of exception
                     {
-                        case NullReferenceException ex:
+                        case NullReferenceException ex: //Usually thrown when JObject cannot be properly parsed (and considering it's Marietta's Cinco de Mayo I'm not going to fix these yet)
                             App.Alert("There was an error parsing the server return object and the resulting data could not be resolved.");
                             break;
 
-                        case WebException ex:
+                        case WebException ex:           //Usually thrown when unable to connect to the database or chemical not found
                             App.Alert($"{ex.Message}");
                             break;
                     }
                 }
-            }, DispatcherPriority.ContextIdle);
+            }, DispatcherPriority.ContextIdle); //ContextIdle is meant to do something but doesn't seem to, but I don't wanna mess about with it
         }
 
+        /// <summary>
+        /// Exit function of worker web-scraping
+        /// </summary>
         private void WorkDone(object sender, RunWorkerCompletedEventArgs e)
         {
-            if(!ExceptionPresent) Information.Visibility = Visibility.Visible;
-            ProgressBox.Visibility = Visibility.Hidden;
-            SearchButton.IsEnabled = true;
+            if(!ExceptionPresent) Information.Visibility = Visibility.Visible;  //Show the information ONLY IF NO EXCEPTIONS RAN (otherwise the separator would be visible)
+            ProgressBox.Visibility = Visibility.Hidden;                         //Hide the working... label
+            SearchButton.IsEnabled = true;                                      //Reenable the search button
         }
 
+        /// <summary>
+        /// Captialises the given match token
+        /// </summary>
+        /// <param name="match">Match token to convert to upper case</param>
+        /// <returns>Upper case version of match</returns>
         private static string CapitaliseSelective(Match match)
         {
             return match.Value.ToUpper();
