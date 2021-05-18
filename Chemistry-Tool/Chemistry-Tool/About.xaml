@@ -13,6 +13,9 @@
                 <TextBlock Text="Written By:&#10;Johann Scott"              Style="{DynamicResource GenericTextBox}"/>
                 <TextBlock Text="Version:&#10;v0.4.2"                       Style="{DynamicResource GenericTextBox}"/>
                 <TextBlock Text="Use permitted under Apache License 2.0"    Style="{DynamicResource GenericTextBox}"/>
+
+                <TextBlock Text="With thanks to:&#10;Matthew Tate&#10;PubChem" Style="{DynamicResource GenericTextBox}"/>
+
                 <TextBlock Style="{DynamicResource GenericTextBox}">
                     <Hyperlink NavigateUri="https://github.com/Prole-Industries/Chemisty-Tool" RequestNavigate="EH_OpenSourceCode">Source Code</Hyperlink>
                 </TextBlock>
