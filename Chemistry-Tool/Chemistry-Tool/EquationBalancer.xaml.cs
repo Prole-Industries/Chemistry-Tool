@@ -49,7 +49,11 @@ namespace Chemistry_Tool
 
         public void RemoveReactant(object sender, RoutedEventArgs e)
         {
-            Reactants.Children.RemoveAt(Reactants.Children.Count - 1);
+            try
+            {
+                Reactants.Children.RemoveAt(Reactants.Children.Count - 1);
+            }
+            catch { }
         }
 
         public void AddProduct(object sender, RoutedEventArgs e)
@@ -59,7 +63,11 @@ namespace Chemistry_Tool
 
         public void RemoveProduct(object sender, RoutedEventArgs e)
         {
-            Products.Children.RemoveAt(Products.Children.Count - 1);
+            try
+            {
+                Products.Children.RemoveAt(Products.Children.Count - 1);
+            }
+            catch { }
         }
 
         public void Balance(object sender, RoutedEventArgs e)
@@ -120,49 +128,76 @@ namespace Chemistry_Tool
                 }
             }
 
-            int i, j, c;
-            int k = 0;
-            int n = GaussJordanMatrix.Count;
+            //int i, j, c;
+            //int k = 0;
+            //int n = Matrix.GetUpperBound(0)+1;
 
-            for(i = 0; i < n; i++)
-            {
-                if(Matrix[i,i] == 0)
-                {
-                    c = 1;
-                    while ((i + c) < n && Matrix[i + c, i] == 0) c++;
-                    if ((i + c) == n) break;
-                    for (j = i, k = 0; k <= n; k++)
-                    {
-                        double temp = Matrix[j, k];
-                        Matrix[j, k] = Matrix[j + c, k];
-                        Matrix[j + c, k] = temp;
-                    }
-                }
-                for (j = 0; j < n; j++)
-                {
-                    //Excluding all i == j
-                    if (i != j)
-                    {
-                        //Converts Matrix to ref
-                        double p = Matrix[j, i] / Matrix[i, i];
-                        for(k = 0; k <= n; k++) Matrix[j, k] = Matrix[j, k] - (Matrix[i, k]) * p;
-                    }
-                }
-            }
-            for (i = 0; i < n; i++)
-            {
-                double div = Matrix[i, i];
-                for (j = i; j < GaussJordanMatrix.Values.ToArray()[0].Length; j++) Matrix[i, j] /= div;
-            }
+            //for(i = 0; i < n; i++)
+            //{
+            //    if(Matrix[i,i] == 0)
+            //    {
+            //        c = 1;
+            //        while ((i + c) < n && Matrix[i + c, i] == 0) c++;
+            //        if ((i + c) == n) break;
+            //        for (j = i, k = 0; k <= n; k++)
+            //        {
+            //            double temp = Matrix[j, k];
+            //            Matrix[j, k] = Matrix[j + c, k];
+            //            Matrix[j + c, k] = temp;
+            //        }
+            //    }
+            //    for (j = 0; j < n; j++)
+            //    {
+            //        //Excluding all i == j
+            //        if (i != j)
+            //        {
+            //            //Converts Matrix to ref
+            //            double p = Matrix[j, i] / Matrix[i, i];
+            //            for (k = 0; k <= n; k++)
+            //            {
+            //                try
+            //                {
+            //                    Matrix[j, k] = Matrix[j, k] - (Matrix[i, k]) * p;
+            //                }
+            //                catch { }
+            //            }
+            //        }
+            //    }
+            //}
+            //for (i = 0; i < n; i++)
+            //{
+            //    double div = Matrix[i, i];
+            //    for (j = i; j < GaussJordanMatrix.Values.ToArray()[0].Length; j++) Matrix[i, j] /= div;
+            //}
+
+            //We're gonna try using this:
+            //http://csharp.algorithmexamples.com/web/Algorithms/Numeric/GaussJordanElimination.html
+
             //Matrix is now in reduced row echelon form
 
             //Make coefficients integers
-            double[] icoefficients = Enumerable.Range(0, Matrix.GetLength(0)).Select(x => Matrix[x, n]).ToArray();
-            double[] dcoefficients = new double[n + 1];
-            int[] coefficients = new int[n + 1];
+            double[] icoefficients = new double[Chemicals.Count];
+            double[] dcoefficients = new double[Chemicals.Count];
+            int[] coefficients = new int[Chemicals.Count];
+
+            int coefIndex = 0;
+            for(int x = 0; x < Matrix.GetLength(1); x++)
+            {
+                if(Matrix[0, x] != 0 && Matrix[0, x] != 1)
+                {
+                    coefIndex = x;
+                    break;
+                }
+            }
+            for(int x = 0; x < Matrix.GetLength(0); x++)
+            {
+                double q = Matrix[x, coefIndex];
+                if (double.IsNaN(q) || q == 0) q = -1;
+                icoefficients[x] = q;
+            }
+            icoefficients = icoefficients.Select(t => t == 0 ? -1 : t).ToArray();
 
             double smallest = icoefficients.Select(t => t).Max();    //Min in abs, but max in real (since all are negative)
-            dcoefficients[n] = -1;
             icoefficients.CopyTo(dcoefficients, 0);
             dcoefficients = dcoefficients.Select(t => t * 1000 / smallest).ToArray();   //Multiply by 1000 to be REALLY safe over purging decimals
             coefficients = dcoefficients.Select(t => (int)Math.Round(t)).ToArray();     //Haha floating points go brrr

@@ -27,6 +27,18 @@
             <TextBlock Text="Reactants" Style="{DynamicResource GenericTextBox}" Grid.Row="0"/>
             <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch" >
                 <StackPanel x:Name="Reactants" HorizontalAlignment="Stretch" Margin="10">
+                    <!--<StackPanel>
+                        <TextBlock Text="Debug Chemical" Foreground="WhiteSmoke"/>
+                        <TextBox Text=""/>
+                    </StackPanel>-->
+                    <!--<StackPanel>
+                        <TextBlock Text="Debug Chemical" Foreground="WhiteSmoke"/>
+                        <TextBox Text="NaOH"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Debug Chemical" Foreground="WhiteSmoke"/>
+                        <TextBox Text="H2SO4"/>
+                    </StackPanel>-->
                 </StackPanel>
             </ScrollViewer>
             <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
@@ -43,6 +55,18 @@
             <TextBlock Text="Products" Style="{DynamicResource GenericTextBox}" Grid.Row="0"/>
             <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch">
                 <StackPanel x:Name="Products" HorizontalAlignment="Stretch" Margin="10">
+                    <!--<StackPanel>
+                        <TextBlock Text="Debug Chemical" Foreground="WhiteSmoke"/>
+                        <TextBox Text=""/>
+                    </StackPanel>-->
+                    <!--<StackPanel>
+                        <TextBlock Text="Debug Chemical" Foreground="WhiteSmoke"/>
+                        <TextBox Text="Na2SO4"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Debug Chemical" Foreground="WhiteSmoke"/>
+                        <TextBox Text="H2O"/>
+                    </StackPanel>-->
                 </StackPanel>
             </ScrollViewer>
             <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
