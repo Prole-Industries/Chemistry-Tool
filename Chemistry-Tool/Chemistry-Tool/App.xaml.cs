@@ -185,8 +185,9 @@ namespace Chemistry_Tool
             }
             catch(ArgumentOutOfRangeException)
             {
-                throw new Exception("Symbol could not be resolved");                    //If symbol does not exist, then throw an error
+                App.Alert($"Symbol '{symbol}' could not be resolved");                  //If symbol does not exist, then throw an error
             }
+            return new Atom();
         }
 
         //I wrote the periodic table out for you can I please have a 9 thanks
@@ -197,7 +198,7 @@ namespace Chemistry_Tool
             new Atom("He",  "Helium",       2,      4,      1,      8,      Categories.NobleGas),
 
             new Atom("Li",  "Lithium",      3,      7,      2,      1,      Categories.AlkaliMetal),
-            new Atom("Be",  "Bryllium",     4,      9,      2,      2,      Categories.AlkaliEarthMetal),
+            new Atom("Be",  "Beryllium",    4,      9,      2,      2,      Categories.AlkaliEarthMetal),
             new Atom("B",   "Boron",        5,      11,     2,      3,      Categories.Metalloid),
             new Atom("C",   "Carbon",       6,      12,     2,      4,      Categories.NonMetal),
             new Atom("N",   "Nitrogen",     7,      14,     2,      5,      Categories.NonMetal),
@@ -346,6 +347,8 @@ namespace Chemistry_Tool
         /// </summary>
         public double MolarWeight { get; private set; } = 0;
 
+        public bool IsValid { get; private set; } = true;
+
         /// <summary>
         /// Constructor for a chemical object
         /// </summary>
@@ -376,11 +379,12 @@ namespace Chemistry_Tool
         private void GetElements(string formula, int number)
         {
             string elementRegex = @"[A-Z][a-z]?\d*|(?<!\([^)]*)\(.*\)\d+(?![^(]*\))";   //Used to isolate atoms or groups of atoms, and their counts if applicable
-            string validateRegex = $"({elementRegex})+";                                //Used to check if the formula is legal
+            string validateRegex = $"({elementRegex})+$";                               //Used to check if the formula is legal
 
-            if (!Regex.IsMatch(formula, validateRegex))
+            if (!Regex.IsMatch(formula, validateRegex, RegexOptions.Multiline))
             {
                 App.Alert("Formula could not be successfully parsed");                  //Throws if the formula passed is illegal
+                IsValid = false;
                 return;
             }
 

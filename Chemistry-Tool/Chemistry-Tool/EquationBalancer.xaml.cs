@@ -99,6 +99,10 @@ namespace Chemistry_Tool
             for (int x = 0; x < Chemicals.Count; x++)
             {
                 bool IsProduct = FirstProductIndex <= x;    //Flag if the current chemical is a product or not
+                if(!Chemicals[x].IsValid)
+                {
+                    return;
+                }
                 foreach(KeyValuePair<Atom, int> kvp in Chemicals[x].Elements)
                 {
                     Atom atom = kvp.Key; int AtomSigma = kvp.Value; //Current atom being checked, amount of that atom in the chemical
@@ -128,52 +132,53 @@ namespace Chemistry_Tool
                 }
             }
 
-            //int i, j, c;
-            //int k = 0;
-            //int n = Matrix.GetUpperBound(0)+1;
+            int i, j, c;
+            int k = 0;
+            int n = Matrix.GetUpperBound(0) + 1;
 
-            //for(i = 0; i < n; i++)
-            //{
-            //    if(Matrix[i,i] == 0)
-            //    {
-            //        c = 1;
-            //        while ((i + c) < n && Matrix[i + c, i] == 0) c++;
-            //        if ((i + c) == n) break;
-            //        for (j = i, k = 0; k <= n; k++)
-            //        {
-            //            double temp = Matrix[j, k];
-            //            Matrix[j, k] = Matrix[j + c, k];
-            //            Matrix[j + c, k] = temp;
-            //        }
-            //    }
-            //    for (j = 0; j < n; j++)
-            //    {
-            //        //Excluding all i == j
-            //        if (i != j)
-            //        {
-            //            //Converts Matrix to ref
-            //            double p = Matrix[j, i] / Matrix[i, i];
-            //            for (k = 0; k <= n; k++)
-            //            {
-            //                try
-            //                {
-            //                    Matrix[j, k] = Matrix[j, k] - (Matrix[i, k]) * p;
-            //                }
-            //                catch { }
-            //            }
-            //        }
-            //    }
-            //}
-            //for (i = 0; i < n; i++)
-            //{
-            //    double div = Matrix[i, i];
-            //    for (j = i; j < GaussJordanMatrix.Values.ToArray()[0].Length; j++) Matrix[i, j] /= div;
-            //}
+            for (i = 0; i < n; i++)
+            {
+                if (Matrix[i, i] == 0)
+                {
+                    c = 1;
+                    while ((i + c) < n && Matrix[i + c, i] == 0) c++;
+                    if ((i + c) == n) break;
+                    for (j = i, k = 0; k <= n; k++)
+                    {
+                        try
+                        {
+                            double temp = Matrix[j, k];
+                            Matrix[j, k] = Matrix[j + c, k];
+                            Matrix[j + c, k] = temp;
+                        }
+                        catch { break; }
+                    }
+                }
+                for (j = 0; j < n; j++)
+                {
+                    //Excluding all i == j
+                    if (i != j)
+                    {
+                        //Converts Matrix to ref
+                        double p = Matrix[j, i] / Matrix[i, i];
+                        for (k = 0; k <= n; k++)
+                        {
+                            try
+                            {
+                                Matrix[j, k] = Matrix[j, k] - (Matrix[i, k]) * p;
+                            }
+                            catch { break; }
+                        }
+                    }
+                }
+            }
+            for (i = 0; i < n; i++)
+            {
+                double div = Matrix[i, i];
+                for (j = i; j < GaussJordanMatrix.Values.ToArray()[0].Length; j++) Matrix[i, j] /= div;
+            }
 
-            //We're gonna try using this:
-            //http://csharp.algorithmexamples.com/web/Algorithms/Numeric/GaussJordanElimination.html
-
-            //Matrix is now in reduced row echelon form
+            //Matrix is now in reduced row echelon form (by selling my soul to satan)
 
             //Make coefficients integers
             double[] icoefficients = new double[Chemicals.Count];
@@ -193,7 +198,8 @@ namespace Chemistry_Tool
             {
                 double q = Matrix[x, coefIndex];
                 if (double.IsNaN(q) || q == 0) q = -1;
-                icoefficients[x] = q;
+                try { icoefficients[x] = q; }
+                catch { break; }
             }
             icoefficients = icoefficients.Select(t => t == 0 ? -1 : t).ToArray();
 
