@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Chemistry_Tool
 {
@@ -38,7 +31,7 @@ namespace Chemistry_Tool
             };
 
             g.Children.Add(new TextBlock() { Style = (Style)Application.Current.FindResource("GenericTextBox"), Text = "Chemical Formula:" });  //Label for chemical formula
-            g.Children.Add(new TextBox() { ToolTip = "Formula of Chemical" });                                                                  //Entry for chemical formula                                                      //Entry for moles
+            g.Children.Add(new TextBox() { Style = (Style)Application.Current.FindResource("GenericTextEntry"), ToolTip = "Formula of Chemical" });                                                                  //Entry for chemical formula                                                      //Entry for moles
             return g;
         }
 
@@ -74,7 +67,7 @@ namespace Chemistry_Tool
         {
             if (Products.Children.Count * Reactants.Children.Count == 0 || Products.Children.Count * Reactants.Children.Count == 1)
             {
-                App.Alert("A total of at least 3 Products and Reactants must be specified");
+                App.Alert("A total of at least 3 Products and Reactants must be specified.");
                 return;
             }
 
@@ -99,18 +92,18 @@ namespace Chemistry_Tool
             for (int x = 0; x < Chemicals.Count; x++)
             {
                 bool IsProduct = FirstProductIndex <= x;    //Flag if the current chemical is a product or not
-                if(!Chemicals[x].IsValid)
+                if (!Chemicals[x].IsValid)
                 {
                     return;
                 }
-                foreach(KeyValuePair<Atom, int> kvp in Chemicals[x].Elements)
+                foreach (KeyValuePair<Atom, int> kvp in Chemicals[x].Elements)
                 {
                     Atom atom = kvp.Key; int AtomSigma = kvp.Value; //Current atom being checked, amount of that atom in the chemical
-                    if(!GaussJordanMatrix.ContainsKey(atom))
+                    if (!GaussJordanMatrix.ContainsKey(atom))
                     {
                         //If the atom isn't in the matrix, add it in
                         //Add 1 extra column to act as a pre-emptive matrix augmentation (column has to be 0)
-                        GaussJordanMatrix.Add(atom, new double[Chemicals.Count+1]);
+                        GaussJordanMatrix.Add(atom, new double[Chemicals.Count + 1]);
                     }
 
                     AtomSigma -= Convert.ToInt16(IsProduct) * 2 * AtomSigma;    //IsProduct*2 allows to make AtomSigma negative without branching
@@ -124,9 +117,9 @@ namespace Chemistry_Tool
 
             //Convert to a 2d array because it makes things so much easier ygm
             double[,] Matrix = new double[GaussJordanMatrix.Count, GaussJordanMatrix.Values.ToArray()[0].Length];
-            for(int x = 0; x < GaussJordanMatrix.Count; x++)
+            for (int x = 0; x < GaussJordanMatrix.Count; x++)
             {
-                for(int y = 0; y < GaussJordanMatrix.Values.ToArray()[x].Length; y++)
+                for (int y = 0; y < GaussJordanMatrix.Values.ToArray()[x].Length; y++)
                 {
                     Matrix[x, y] = GaussJordanMatrix.Values.ToArray()[x][y];
                 }
@@ -186,15 +179,15 @@ namespace Chemistry_Tool
             int[] coefficients = new int[Chemicals.Count];
 
             int coefIndex = 0;
-            for(int x = 0; x < Matrix.GetLength(1); x++)
+            for (int x = 0; x < Matrix.GetLength(1); x++)
             {
-                if(Matrix[0, x] != 0 && Matrix[0, x] != 1)
+                if (Matrix[0, x] != 0 && Matrix[0, x] != 1)
                 {
                     coefIndex = x;
                     break;
                 }
             }
-            for(int x = 0; x < Matrix.GetLength(0); x++)
+            for (int x = 0; x < Matrix.GetLength(0); x++)
             {
                 double q = Matrix[x, coefIndex];
                 if (double.IsNaN(q) || q == 0) q = -1;
@@ -211,9 +204,61 @@ namespace Chemistry_Tool
             coefficients = coefficients.Select(t => t / gcd).ToArray();                 //Divide all the values by the greated common factor to give equation in simplest form
             //Coefficients are fully balanced (apply to each chemical sequentially)
 
+            Dictionary<Atom, int> _lhs = new Dictionary<Atom, int>(), _rhs = new Dictionary<Atom, int>();
+
+            for (int x = 0; x < FirstProductIndex; x++)
+            {
+                foreach (KeyValuePair<Atom, int> kvp in Chemicals[x].Elements)
+                {
+                    Atom atom = kvp.Key; int AtomSigma = kvp.Value;
+                    if (!_lhs.ContainsKey(atom))
+                    {
+                        _lhs.Add(atom, AtomSigma * coefficients[x]);
+                    }
+                    else
+                    {
+                        _lhs[atom] += AtomSigma * coefficients[x];
+                    }
+                }
+            }
+            for (int x = FirstProductIndex; x < Chemicals.Count; x++)
+            {
+                foreach (KeyValuePair<Atom, int> kvp in Chemicals[x].Elements)
+                {
+                    Atom atom = kvp.Key; int AtomSigma = kvp.Value;
+                    if (!_rhs.ContainsKey(atom))
+                    {
+                        _rhs.Add(atom, AtomSigma * coefficients[x]);
+                    }
+                    else
+                    {
+                        _rhs[atom] += AtomSigma * coefficients[x];
+                    }
+                }
+            }
+
+            var lhs = (from entry in _lhs orderby entry.Key.Name ascending select entry).ToDictionary(pair => pair.Key, pair => pair.Value);
+            var rhs = (from entry in _rhs orderby entry.Key.Name ascending select entry).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            string[] keys_l = lhs.Keys.Select(t => t.Name).ToArray();
+            int[] values_l = lhs.Values.ToArray();
+            string[] keys_r = rhs.Keys.Select(t => t.Name).ToArray();
+            int[] values_r = rhs.Values.ToArray();
+
+            Array.Sort(keys_l);
+            Array.Sort(values_l);
+            Array.Sort(keys_r);
+            Array.Sort(values_r);
+
+            if (!keys_l.SequenceEqual(keys_r) || !values_l.SequenceEqual(values_r))
+            {
+                App.Alert("Equation could not be balanced.");
+                return;
+            }
+
             //Builds the equation in a nice string
             List<string> coefchems = new List<string>();
-            for(int x = 0; x < Chemicals.Count; x++)
+            for (int x = 0; x < Chemicals.Count; x++)
             {
                 string cf = coefficients[x] == 1 ? "" : coefficients[x].ToString();
                 string push = $"{cf}{Chemicals[x].MolecularFormulaPretty}";
@@ -239,7 +284,7 @@ namespace Chemistry_Tool
             }
 
             int result = arr[0];
-            for(int i = 1; i < arr.Length; i++)
+            for (int i = 1; i < arr.Length; i++)
             {
                 result = GCD(arr[i], result);
                 if (result == 1) return 1;

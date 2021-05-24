@@ -8,54 +8,54 @@
         Title="Chemistry Tool  - Reversible Reaction Tool" Height="720" Width="1080">
     <Grid x:Name="Root" Background="#FF252525">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20*"/>
-            <ColumnDefinition Width="20*"/>
-            <ColumnDefinition Width="60*"/>
+            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="20*" />
+            <ColumnDefinition Width="60*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="90*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="90*" />
+            <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Column="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="85*"/>
-                <RowDefinition Height="10*"/>
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="85*" />
+                <RowDefinition Height="10*" />
             </Grid.RowDefinitions>
-            
-            <TextBlock Text="Reactants" Style="{DynamicResource GenericTextBox}" Grid.Row="0"/>
-            <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch" >
+
+            <TextBlock Text="Reactants" Style="{DynamicResource GenericTextBox}" Grid.Row="0" />
+            <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch">
                 <StackPanel x:Name="Reactants" HorizontalAlignment="Stretch" Margin="10">
                 </StackPanel>
             </ScrollViewer>
             <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
-                <Button Content="Add Reactant"      Click="AddReactant"     Style="{DynamicResource GenericButton}" Grid.Row="2" VerticalAlignment="Bottom"/>
-                <Button Content="Remove Reactant"   Click="RemoveReactant"  Style="{DynamicResource GenericButton}" Grid.Row="3" VerticalAlignment="Bottom"/>
+                <Button Content="Add Reactant"      Click="AddReactant"     Style="{DynamicResource GenericButton}" Grid.Row="2" VerticalAlignment="Bottom" />
+                <Button Content="Remove Reactant"   Click="RemoveReactant"  Style="{DynamicResource GenericButton}" Grid.Row="3" VerticalAlignment="Bottom" />
             </StackPanel>
         </Grid>
         <Grid Grid.Column="1" Grid.RowSpan="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="85*"/>
-                <RowDefinition Height="10*"/>
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="85*" />
+                <RowDefinition Height="10*" />
             </Grid.RowDefinitions>
-            <TextBlock Text="Products" Style="{DynamicResource GenericTextBox}" Grid.Row="0"/>
+            <TextBlock Text="Products" Style="{DynamicResource GenericTextBox}" Grid.Row="0" />
             <ScrollViewer Template="{DynamicResource GenericScroll}" Grid.Row="1" HorizontalAlignment="Stretch">
                 <StackPanel x:Name="Products" HorizontalAlignment="Stretch" Margin="10">
                 </StackPanel>
             </ScrollViewer>
             <StackPanel Grid.Row="2" VerticalAlignment="Bottom">
-                <Button Content="Add Product"       Click="AddProduct"      Style="{DynamicResource GenericButton}" Grid.Row="2" VerticalAlignment="Bottom"/>
-                <Button Content="Remove Product"    Click="RemoveProduct"   Style="{DynamicResource GenericButton}" Grid.Row="3" VerticalAlignment="Bottom"/>
+                <Button Content="Add Product"       Click="AddProduct"      Style="{DynamicResource GenericButton}" Grid.Row="2" VerticalAlignment="Bottom" />
+                <Button Content="Remove Product"    Click="RemoveProduct"   Style="{DynamicResource GenericButton}" Grid.Row="3" VerticalAlignment="Bottom" />
             </StackPanel>
         </Grid>
 
         <StackPanel x:Name="EqData" Visibility="Hidden" Background="#44999999" Grid.Column="2" Margin="10">
-            <TextBlock                  Text="Equilibrium Information"  Style="{DynamicResource GenericTextBox}" Margin="5"/>
-            <TextBlock x:Name="EqConst" Text="Kc:"                      Style="{DynamicResource GenericTextBox}" HorizontalAlignment="Left" Margin="5"/>
+            <TextBlock                  Text="Equilibrium Information"  Style="{DynamicResource GenericTextBox}" Margin="5" />
+            <TextBlock x:Name="EqConst" Text="Kc:"                      Style="{DynamicResource GenericTextBox}" HorizontalAlignment="Left" Margin="5" />
         </StackPanel>
 
-        <Button Content="Find Equilibrium" Click="Equilibrium" Style="{DynamicResource GenericButton}" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        <Button Content="Find Equilibrium" Click="Equilibrium" Style="{DynamicResource GenericButton}" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
     </Grid>
 </Window>

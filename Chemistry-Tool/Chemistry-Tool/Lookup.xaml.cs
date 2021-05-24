@@ -1,24 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Chemistry_Tool
 {
@@ -89,7 +77,7 @@ namespace Chemistry_Tool
                      * data as PUG-VIEW, which is what I'm using. The fact that two parallel protocols, which use the same data, don't give the same abundancies of data
                      * really really annoys me to the point of pure anger. Also PUG-SOAP, which is meant to integrate really well into C# .NET doens't actually work
                      * due to obselete Web References.
-                     * 
+                     *
                      * TL;DR: This is a mess, I'm mightily cheesed, Die well brave warrior. (Trust me bro)
                      */
                     string name = Regex.Replace(result["RecordTitle"].Value<string>(), @"(?<=[ \-,])[a-z]", new MatchEvaluator(CapitaliseSelective));
@@ -153,17 +141,17 @@ namespace Chemistry_Tool
                     StructureImage.Source = bitmap;
                 }
                 //Information gathering can throw exceptions, these get handled here
-                catch(Exception _ex)
+                catch (Exception _ex)
                 {
                     ExceptionPresent = true;    //Indicates that exception has been run
-                    switch(_ex)                 //Check type of exception
+                    switch (_ex)                 //Check type of exception
                     {
                         case NullReferenceException ex: //Usually thrown when JObject cannot be properly parsed (and considering it's Marietta's Cinco de Mayo I'm not going to fix these yet)
                             App.Alert("There was an error parsing the server return object and the resulting data could not be resolved.");
                             break;
 
                         case WebException ex:           //Usually thrown when unable to connect to the database or chemical not found
-                            App.Alert($"{ex.Message}");
+                            App.Alert($"{ex.Message}.");
                             break;
                     }
                 }
@@ -175,7 +163,7 @@ namespace Chemistry_Tool
         /// </summary>
         private void WorkDone(object sender, RunWorkerCompletedEventArgs e)
         {
-            if(!ExceptionPresent) Information.Visibility = Visibility.Visible;  //Show the information ONLY IF NO EXCEPTIONS RAN (otherwise the separator would be visible)
+            if (!ExceptionPresent) Information.Visibility = Visibility.Visible;  //Show the information ONLY IF NO EXCEPTIONS RAN (otherwise the separator would be visible)
             ProgressBox.Visibility = Visibility.Hidden;                         //Hide the working... label
             SearchButton.IsEnabled = true;                                      //Reenable the search button
         }

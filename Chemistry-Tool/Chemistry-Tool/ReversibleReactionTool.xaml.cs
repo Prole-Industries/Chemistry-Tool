@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Chemistry_Tool
 {
@@ -72,15 +62,15 @@ namespace Chemistry_Tool
             double KcProducts = 1;  //Local for total products value
 
             //Checks if at least 2 products and 1 reactant or vice versa are present
-            if(Products.Children.Count * Reactants.Children.Count == 0 || Products.Children.Count * Reactants.Children.Count == 1)
+            if (Products.Children.Count * Reactants.Children.Count == 0 || Products.Children.Count * Reactants.Children.Count == 1)
             {
                 //If not present, alert user and exit function
-                App.Alert("A total of at least 3 Products and Reactants must be specified");
+                App.Alert("A total of at least 3 Products and Reactants must be specified.");
                 return;
             }
 
             //Multitply reactants with the concentration of each reactant raised to the corresponding moles
-            foreach(Substance reactant in Reactants.Children.OfType<StackPanel>().Select(t => new Substance(t)))
+            foreach (Substance reactant in Reactants.Children.OfType<StackPanel>().Select(t => new Substance(t)))
             {
                 KcReactants *= Math.Pow(reactant.Concentration, reactant.Moles);
             }

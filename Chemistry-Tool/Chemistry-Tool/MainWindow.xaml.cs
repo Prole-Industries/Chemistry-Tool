@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Chemistry_Tool
 {
@@ -27,12 +16,39 @@ namespace Chemistry_Tool
         }
 
         /// <summary>
+        /// Instance of app to be loaded
+        /// </summary>
+        private static Window opener;
+
+        /// <summary>
         /// Called when an app button is clicked
         /// </summary>
         public void AppLoader(object sender, RoutedEventArgs e)
         {
             AppData.Visibility = Visibility.Visible;                //Sets AppData control to visible
             AppName.Text = ((Button)sender).Content.ToString();     //Sets the title of the AppData control to be the app name
+
+            switch (AppName.Text)    //Load a certain app window into opener, determined by casing the appname
+            {
+                case "Reversible Reaction Tool":
+                    Description.Text =
+"Tool used for finding equilibrium constants in a given reaction.";
+                    break;
+
+                case "Equation Balancer":
+                    Description.Text =
+"Tool used for balancing a given chemical equation.";
+                    break;
+
+                case "Chemical Lookup":
+                    Description.Text =
+@"Searches the PubChem database for the specified chemical.
+Warning: This tool is really unstable from developmental reasons, tread carefully.";
+                    break;
+
+                default:    //Shouldn't run, but here if you need it
+                    throw new NotImplementedException($"Specified tool of name \"{AppName.Text}\" has not yet been implemented.");
+            }
         }
 
         /// <summary>
@@ -40,8 +56,7 @@ namespace Chemistry_Tool
         /// </summary>
         public void LaunchApp(object sender, RoutedEventArgs e)
         {
-            Window opener;          //Create a generic window to be loaded with the specific app
-            switch(AppName.Text)    //Load a certain app window into opener, determined by casing the appname
+            switch (AppName.Text)    //Load a certain app window into opener, determined by casing the appname
             {
                 case "Reversible Reaction Tool":
                     opener = new ReversibleReactionTool();
@@ -54,11 +69,7 @@ namespace Chemistry_Tool
                 case "Chemical Lookup":
                     opener = new Lookup();
                     break;
-
-                default:    //Shouldn't run, but here if you need it
-                    throw new NotImplementedException($"Specified tool of name \"{AppName.Text}\" has not yet been implemented.");
             }
-
             opener.Show();  //Reveal window loaded with specified app
         }
 
@@ -69,14 +80,6 @@ namespace Chemistry_Tool
         {
             About about = new About();
             about.Show();
-        }
-
-        /// <summary>
-        /// Reveals settings window
-        /// </summary>
-        public void EH_OpenSettings(object sender, RoutedEventArgs e)
-        {
-
         }
 
         /// <summary>

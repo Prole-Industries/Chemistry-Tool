@@ -1,27 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Chemistry_Tool
 {
@@ -52,12 +34,12 @@ namespace Chemistry_Tool
                 Margin = new Thickness(0, 5, 0, 5)
             };
 
-            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Chemical Formula:" });  //Label for chemical formula
-            g.Children.Add(new TextBox() { ToolTip = "Formula of Chemical" });                                                      //Entry for chemical formula
-            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Concentration:" });     //Label for concentration
-            g.Children.Add(new TextBox() { ToolTip = "Concentration of Chemical (mol dm⁻³)" });                                     //Entry for concentration
-            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Moles:" });             //Label for moles
-            g.Children.Add(new TextBox() { ToolTip = "Moles of Chemical" });                                                        //Entry for moles
+            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Chemical Formula:" });                          //Label for chemical formula
+            g.Children.Add(new TextBox() { Style = (Style)Current.FindResource("GenericTextEntry"), ToolTip = "Formula of Chemical" });                     //Entry for chemical formula
+            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Concentration:" });                             //Label for concentration
+            g.Children.Add(new TextBox() { Style = (Style)Current.FindResource("GenericTextEntry"), ToolTip = "Concentration of Chemical (mol dm⁻³)" });    //Entry for concentration
+            g.Children.Add(new TextBlock() { Style = (Style)Current.FindResource("GenericTextBox"), Text = "Moles:" });                                     //Label for moles
+            g.Children.Add(new TextBox() { Style = (Style)Current.FindResource("GenericTextEntry"), ToolTip = "Moles of Chemical" });                       //Entry for moles
             return g;
         }
 
@@ -68,9 +50,9 @@ namespace Chemistry_Tool
         /// <returns></returns>
         public static bool IsChemicalValid(StackPanel target)
         {
-            if (((TextBox)target.Children[1]).Text == "") { App.Alert("One or more chemical names are missing"); return false; }
-            if (!IsNumValid((TextBox)target.Children[3])) { App.Alert("One or more chemical concentrations are invalid"); return false; }
-            if (!IsNumValid((TextBox)target.Children[5])) { App.Alert("One or more molar values are invalid"); return false; }
+            if (((TextBox)target.Children[1]).Text == "") { App.Alert("One or more chemical names are missing."); return false; }
+            if (!IsNumValid((TextBox)target.Children[3])) { App.Alert("One or more chemical concentrations are invalid."); return false; }
+            if (!IsNumValid((TextBox)target.Children[5])) { App.Alert("One or more molar values are invalid."); return false; }
             return true;
         }
 
@@ -95,6 +77,7 @@ namespace Chemistry_Tool
         /// Atomic Symbol of the atom (e.g. H, Na, etc.)
         /// </summary>
         public string Symbol { get; private set; }
+
         /// <summary>
         /// Name of the atom (e.g. Hydrogen, Sodium, etc.)
         /// </summary>
@@ -104,6 +87,7 @@ namespace Chemistry_Tool
         /// Atomic number of the atom (proton count)
         /// </summary>
         public int AtomicNumber { get; private set; }
+
         /// <summary>
         /// Mass number of the atom (nucleon count)
         /// </summary>
@@ -113,6 +97,7 @@ namespace Chemistry_Tool
         /// Period of the atom
         /// </summary>
         public int Period { get; private set; }
+
         /// <summary>
         /// Group of the atom
         /// </summary>
@@ -183,9 +168,9 @@ namespace Chemistry_Tool
             {
                 return PeriodicTable[PeriodicTable.FindIndex(t => t.Symbol == symbol)]; //Get atom by searching the periodic table for the symbol
             }
-            catch(ArgumentOutOfRangeException)
+            catch (ArgumentOutOfRangeException)
             {
-                App.Alert($"Symbol '{symbol}' could not be resolved");                  //If symbol does not exist, then throw an error
+                App.Alert($"Symbol '{symbol}' could not be resolved.");                  //If symbol does not exist, then throw an error
             }
             return new Atom();
         }
@@ -334,14 +319,17 @@ namespace Chemistry_Tool
         /// Dictionary of all elements in the atom and the amount of atoms
         /// </summary>
         public Dictionary<Atom, int> Elements { get; private set; } = new Dictionary<Atom, int>();
+
         /// <summary>
         /// The simple, parse-safe version of the formula
         /// </summary>
         public string MolecularFormula { get; private set; }
+
         /// <summary>
         /// The formula containing subscript
         /// </summary>
         public string MolecularFormulaPretty { get; private set; }
+
         /// <summary>
         /// The molar weight of the chemical
         /// </summary>
@@ -358,14 +346,14 @@ namespace Chemistry_Tool
             GetElements(formula, 1);    //Find the elements of the chemical (parses formula), number is 1 because it needs to satisfy the recursive parameter
 
             MolecularFormula = formula; //Molecular formula (parse-safe) is set to the constructor parameter
-            
-            for(int x = 48; x < 58; x++)    //Converts unicode 0-9 to subscript 0-9 by shifting their unicode values
+
+            for (int x = 48; x < 58; x++)    //Converts unicode 0-9 to subscript 0-9 by shifting their unicode values
             {
-                formula = formula.Replace(Convert.ToChar(x), Convert.ToChar(x+8272));   //Iterative, shifts the standard numerals to subscript
+                formula = formula.Replace(Convert.ToChar(x), Convert.ToChar(x + 8272));   //Iterative, shifts the standard numerals to subscript
             }
             MolecularFormulaPretty = formula;   //Set this replaced formula to be the pretty formula
 
-            foreach(KeyValuePair<Atom, int> kvp in Elements)
+            foreach (KeyValuePair<Atom, int> kvp in Elements)
             {
                 MolarWeight += kvp.Key.MassNumber * kvp.Value;  //Find molar weight by computing a total of the atomic weights of each of the atoms
             }
@@ -379,11 +367,11 @@ namespace Chemistry_Tool
         private void GetElements(string formula, int number)
         {
             string elementRegex = @"[A-Z][a-z]?\d*|(?<!\([^)]*)\(.*\)\d+(?![^(]*\))";   //Used to isolate atoms or groups of atoms, and their counts if applicable
-            string validateRegex = $"({elementRegex})+$";                               //Used to check if the formula is legal
+            string validateRegex = $"^({elementRegex})+$";                              //Used to check if the formula is legal
 
             if (!Regex.IsMatch(formula, validateRegex, RegexOptions.Multiline))
             {
-                App.Alert("Formula could not be successfully parsed");                  //Throws if the formula passed is illegal
+                App.Alert("Formula could not be successfully parsed.");                  //Throws if the formula passed is illegal
                 IsValid = false;
                 return;
             }
@@ -393,8 +381,8 @@ namespace Chemistry_Tool
                 string mstring = match.ToString();  //String representation of the match, prevents having to run the same function call continuously
                 if (mstring.Contains("("))          //All atom group matches contain an open bracket, so if it exists...
                 {
-                                                    //...run this function recursively on the atom group, by isolating the atom group and its count.
-                    GetElements(mstring.Substring(1, mstring.Length - mstring.LastIndexOf(")") + 1), Convert.ToInt32(mstring.Substring(mstring.LastIndexOf(")")+1)));
+                    //...run this function recursively on the atom group, by isolating the atom group and its count.
+                    GetElements(mstring.Substring(1, mstring.Length - mstring.LastIndexOf(")") + 1), Convert.ToInt32(mstring.Substring(mstring.LastIndexOf(")") + 1)));
                 }
                 else    //Enters if the match isn't an atom group
                 {
@@ -405,6 +393,11 @@ namespace Chemistry_Tool
                         1;
                     Atom genericAtom = Atom.GetBySymbol(symbol);                        //Build an atom by the given symbol
 
+                    if (genericAtom == new Atom())
+                    {
+                        IsValid = false;
+                        return;
+                    }
                     if (Elements.ContainsKey(genericAtom)) Elements[genericAtom] += (count * number);   //If the atom is already present in the Elements dictonary, increase the associate int by count * number of atom groups
                     else Elements.Add(genericAtom, count * number);                                     //If the atom doesn't exist in Elements, add the Atom to it and set its inital associate int to count * number of atom groups
                 }
@@ -462,10 +455,12 @@ namespace Chemistry_Tool
         /// Subject chemical
         /// </summary>
         public Chemical Chemical { get; private set; }
+
         /// <summary>
         /// Concentration of the chemical in mol dm^-3
         /// </summary>
         public double Concentration { get; private set; }
+
         /// <summary>
         /// Moles of the chemical present
         /// </summary>
